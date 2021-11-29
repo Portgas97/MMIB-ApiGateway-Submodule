@@ -5,7 +5,7 @@ from flask_login import (logout_user)
 from flask import abort
 import requests
 
-from monolith.swagger_client.models import User, NewUser
+from monolith.swagger_client.models import User, NewUser, Report
 
 
 class UserManager:
@@ -103,35 +103,71 @@ class UserManager:
 
     @classmethod
     def get_by_id(cls, id):
-        pass
+        try:
+            url = "%s/users/by_id/%s" % (cls.USERS_ENDPOINT, str(id))
+            response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+        if response.status_code == 200:
+            return response.json()
+        return None
 
     @classmethod
     def get_by_mail(cls, email):
-        pass
+        try:
+            url = ("%s/users/by_mail/" % cls.USERS_ENDPOINT) + email
+            response = requests.head(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+        if response.status_code == 200:
+            return response.json()
+        return None
 
     @classmethod
     def get_points(cls, id):
         try:
             url = "%s/points/%s" % (cls.USERS_ENDPOINT, str(id))
-            response = requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+            response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except:
             return abort(500)
         if response.status_code == 200:
-            return response.content
+            return int(response.content)
         else:
             return abort(404)
 
     @classmethod
     def get_reports(cls):
-        pass
+        try:
+            url = "%s/report" % cls.USERS_ENDPOINT
+            response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+        return response.json()
 
     @classmethod
     def get_users_list(cls):
-        pass
+        try:
+            url = "%s/users" % cls.USERS_ENDPOINT
+            response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+        return response.json()
 
     @classmethod
     def report_user(cls, author, reported, description, timestamp):
-        pass
+        report = Report()
+        report.author_email = author
+        report.reported_email = reported
+        report.description = description
+        report.timestamp = timestamp
+        try:
+            url = "%s/report" % cls.USERS_ENDPOINT
+            response = requests.post(url,
+                                     timeout=cls.REQUESTS_TIMEOUT_SECONDS,
+                                     data=json.dump(report))
+        except:
+            return abort(500)
+        return response.status_code == 200
 
     @classmethod
     def set_filter(cls, id):
