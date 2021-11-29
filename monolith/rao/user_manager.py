@@ -1,7 +1,11 @@
+import json
+
 from monolith import app
 from flask_login import (logout_user)
 from flask import abort
+import requests
 
+from monolith.swagger_client.models import User, NewUser
 
 
 class UserManager:
@@ -10,32 +14,92 @@ class UserManager:
 
     @classmethod
     def add_points(cls, id):
-        pass
+        try:
+            url = "%s/points/%s" % (cls.USERS_ENDPOINT, str(id))
+            response = requests.put(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+        if response.status_code != 200:
+            return abort(404)
 
     @classmethod
     def create_user(cls, email, firstname, lastname, date_of_birth, password):
-        pass
+        user = NewUser()
+        user.email = email
+        user.firstname = firstname
+        user.lastname = lastname
+        user.password = password
+        user.date_of_birth = date_of_birth
+        try:
+            url = "%s/users" % cls.USERS_ENDPOINT
+            response = requests.post(url,
+                                     timeout=cls.REQUESTS_TIMEOUT_SECONDS,
+                                     data=json.dump(user))
+        except:
+            return abort(500)
+        return response.status_code == 200
 
     @classmethod
     def decr_points(cls, id):
-        pass
+        try:
+            url = "%s/points/%s" % (cls.USERS_ENDPOINT, str(id))
+            response = requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+        if response.status_code == 404:
+            return abort(404)
+        return response.status_code == 200
+
 
     @classmethod
     def delete_user(cls, id):
-        pass
+        try:
+            url = "%s/users/%s" % (cls.USERS_ENDPOINT, str(id))
+            response = requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+
 
     @classmethod
     def edit_user(cls, id, email=None, firstname=None,
                   lastname=None, date_of_birth=None, password=None):
-        pass
+        user = User()
+        if email is not None:
+            user.email = email
+        if firstname is not None:
+            user.firstname = firstname
+        if lastname is not None:
+            user.lastname = lastname
+        if password is not None:
+            user.password = password
+        if date_of_birth is not None:
+            user.date_of_birth = date_of_birth
+        try:
+            url = "%s/users" % cls.USERS_ENDPOINT
+            response = requests.put(url,
+                                    timeout=cls.REQUESTS_TIMEOUT_SECONDS,
+                                    data=json.dump(user))
+        except:
+            return abort(500)
+        return response.status_code == 200
 
     @classmethod
     def exist_by_id(cls, id):
-        pass
+        try:
+            url = "%s/users/by_id/%s" % (cls.USERS_ENDPOINT, str(id))
+            response = requests.head(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+        return response.status_code == 200
 
     @classmethod
     def exist_by_mail(cls, email):
-        pass
+        try:
+            url = ("%s/users/by_mail/" % cls.USERS_ENDPOINT) + email
+            response = requests.head(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+        return response.status_code == 200
 
     @classmethod
     def get_by_id(cls, id):
@@ -47,7 +111,15 @@ class UserManager:
 
     @classmethod
     def get_points(cls, id):
-        pass
+        try:
+            url = "%s/points/%s" % (cls.USERS_ENDPOINT, str(id))
+            response = requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
+        if response.status_code == 200:
+            return response.content
+        else:
+            return abort(404)
 
     @classmethod
     def get_reports(cls):
@@ -63,11 +135,19 @@ class UserManager:
 
     @classmethod
     def set_filter(cls, id):
-        pass
+        try:
+            url = "%s/filter/%s" % (cls.USERS_ENDPOINT, str(id))
+            requests.put(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
 
     @classmethod
     def unset_filter(cls, id):
-        pass
+        try:
+            url = "%s/filter/%s" % (cls.USERS_ENDPOINT, str(id))
+            requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+            return abort(500)
 
     # @classmethod
     # def get_user_by_id(cls, user_id: int) -> User:
