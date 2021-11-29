@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <title>Sign In</title>
+    <link rel="icon" href="../../static/images/icon.png">
+    <link rel="stylesheet"
+    href=
+    "https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script
+    src=
+"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js">
+    </script>
+    <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
+    </script>
+    <style>
+        .jumbotron {
+            margin-top: 60px !important;
+            text-align: center;
+        }
+        input {
+            text-align: center !important;
+        }
+    </style>
+  </head>
+
+  <body style="background-color: #e7f2f8b2;">
+       <div class="container jumbotron" >
+          <h2>Please, Sign in</h2>
+          <form action="" method="POST" >
+              {{ form.hidden_tag() }}
+
+              {% for field in form.display %}
+                <div class="form-group row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                    {{ form[field](class='form-control form-control-lg',
+                        placeholder=field)}}
+                    </div>
+                </div>
+                {% if form[field].errors %}
+                  {% for e in form[field].errors %}
+                  <p class="help-block">{{ e }}</p>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+
+
+             <button type=submit class="btn btn-primary" value="Submit">
+                 Submit
+             </button>
+          </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!--suppress ALL -->
+
+<html>
+<head>
+    <title>Send a Message</title>
+    <link rel="icon" href="../../static/images/icon.png">
+    <link rel="stylesheet"
+    href=
+    "https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script
+    src=
+"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js">
+    </script>
+    <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
+    </script>
+    <script>
+         // fill the recipient form input, if necessary
+         function set_recipients(){
+            // retrieve the URL
+            const queryString = window.location.search;
+            // retrieve the string of parameters
+            const urlParams = new URLSearchParams(queryString);
+            // check if data are passed through a GET request
+            if(urlParams.has('data')){
+                // retrieve the value
+                const recipients = urlParams.get('data');
+                // set the input field
+                document.getElementById('recipient').setAttribute('value', recipients);
+            }
+         }
+    </script>
+</head>
+<body onload="set_recipients()">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-light navbar-laravel"
+         style="margin-bottom: 20px;background-color: #e3f2fd;">
+      <div class="container">
+
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">
+            <img src="../../static/images/icon.png" alt="logo" width="50"
+                height="50">
+          </a>
+        </div>
+
+        <a class="navbar-brand" href="/">My Message in a Bottle</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Right Side Of Navbar -->
+            <ul class="navbar-nav ml-auto">
+              <li>
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle "
+                          type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">
+                    Hi, {{ current_user.firstname }}!
+                  </button>
+                  <div class="dropdown-menu"
+                       aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item"
+                       href="/user_data">Account Data</a>
+                    <a class="dropdown-item"
+                       href="/unregister">Delete Account</a>
+                    <a class="dropdown-item"
+                       href="/logout">Logout</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container jumbotron text-center">
+        <h2>Send message</h2>
+        <!-- to set through the DOM the selected recipients passed as GET parameters -->
+        <form action="" method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            {% for field in form.display %}
+                <div class="form-group">
+                    {{ form[field](class='form-control', placeholder=field) }}
+                </div>
+                {% if form[field].errors %}
+                    {% for e in form[field].errors %}
+                    <p class="help-block">
+                        {{ e }}
+                    </p>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+            {% if use == 'send' %}
+            See a <a href="/list_of_recipients">list</a> of possible recipients</p>
+            <button type=submit
+                    class="btn btn-primary"
+                    name="save_button"
+                    value="Save">
+                Save
+            </button>
+            or
+            {% endif %}
+
+            <button type=submit
+                    class="btn btn-primary"
+                    name="send_button"
+                    value="Send">
+                Send
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

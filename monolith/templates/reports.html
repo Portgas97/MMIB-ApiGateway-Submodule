@@ -1,0 +1,40 @@
+<!--suppress ALL -->
+<html>
+<head>
+    <title>Reports</title>
+    <link rel="icon" href="../../static/images/icon.png">
+    <style>
+      table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        td, th {
+          border: 1px solid #74BDCB;
+          text-align: left;
+          padding: 8px;
+        }
+        tr:nth-child(even) {
+          background-color: #74BDCB;
+        }
+    </style>
+</head>
+
+<body style="background-color: #E7F2F8">
+    <h1>Reports</h1>
+    <table>
+        <th>Timestamp</th>
+        <th>Author</th>
+        <th>Reported User</th>
+        <th>Description</th>
+        {% for report in reports %}
+        <tr>
+            <td>{{report.timestamp}}</td>
+            <td>{{report.author_email}} </td>
+            <td>{{report.reported_email}}</td>
+            <td>{{report.description}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
