@@ -1,5 +1,7 @@
 import json
 
+from werkzeug.security import check_password_hash
+
 from monolith import app
 from flask_login import (logout_user)
 from flask import abort
@@ -184,6 +186,14 @@ class UserManager:
             requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except:
             return abort(500)
+
+    @classmethod
+    def authenticate(cls, email, password):
+        user = cls.get_by_mail(email)
+        if user is None:
+            return False
+        hash = user['password']
+        return check_password_hash(hash, password)
 
     # @classmethod
     # def get_user_by_id(cls, user_id: int) -> User:

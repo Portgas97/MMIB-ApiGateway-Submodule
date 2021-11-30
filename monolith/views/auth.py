@@ -1,7 +1,8 @@
 from flask import Blueprint, redirect, render_template, abort
 from flask_login import login_user, logout_user
+from monolith.swagger_client.models.user import User
 
-from monolith.database import User, db
+from monolith.database import db
 from monolith.forms import LoginForm
 from monolith.views.doc import auto
 
@@ -20,9 +21,9 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         email, password = form.data['email'], form.data['password']
-        q = db.session.query(User).filter(User.email == email)
-        user = q.first()
-        if user is not None and user.authenticate(password):
+        if UserManager.authenticate(email, password):
+            user = UserManager.get_by_mail(email)
+            user = User.from_dict(user)
             login_user(user)
             return redirect('/')
         else:

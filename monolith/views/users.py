@@ -1,8 +1,8 @@
 import flask_login
 from flask import Blueprint, redirect, render_template, request
 from flask_login import login_required
-
-from monolith.database import User, db
+from monolith.rao.user_manager import UserManager
+from monolith.database import db
 from monolith.forms import UserForm
 from monolith.views.doc import auto
 
@@ -18,7 +18,7 @@ def _users():
 
     :return: a rendered view
     """
-    users_query = db.session.query(User)
+    users_query = UserManager.get_users_list()
     return render_template("users.html", users=users_query)
 
 
@@ -37,19 +37,12 @@ def create_user():
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            q = db.session.query(User).filter(User.email == form.data['email'])
-            user = q.first()
-            if user is None:
-                new_user = User()
-                form.populate_obj(new_user)
-                # Password should be hashed with some salt.
-                # For example if you choose a hash function x,
-                # where x is in [md5, sha1, bcrypt],
-                # the hashed_password should be = x(password + s) where
-                # s is a secret key.
-                new_user.set_password(form.password.data)
-                db.session.add(new_user)
-                db.session.commit()
+
+            if UserManager.create_user(form.email,
+                                       form.firstname,
+                                       form.lastname,
+                                       form.date_of_birth,
+                                       form.password):
                 return redirect('/users')
             else:
                 form.email.errors.append("Mail already in use.")
@@ -62,12 +55,11 @@ def create_user():
         raise RuntimeError('This should not happen!')
 
 
-def _user_data2dict(data: User, points):
+def _user_data2dict(data):
     """
     Convert user data into a dictionary for easy display.
 
     :param data: input User object
-    :param points: lottery points
     :returns: a dictionary containing user data
     :rtype: dict
     """
@@ -76,7 +68,7 @@ def _user_data2dict(data: User, points):
         "last name": data.lastname,
         "email": data.email,
         "date of birth": data.date_of_birth.date(),
-        "lottery points": str(points)
+        "lottery points": str(data.points)
     }
 
 
@@ -94,9 +86,7 @@ def user_data():
     # get the current user
     user = flask_login.current_user
     # get the user's data fom the database
-    data = db.session.query(User).filter(User.id == user.get_id()).first()
-    # get the user's lottery points
-    points = user.get_points()
+    data = UserManager.get_by_id(user.id)
     # convert user data into a dictionary for easy display.
-    result = _user_data2dict(data, points)
+    result = _user_data2dict(data)
     return render_template('user_data.html', result=result)

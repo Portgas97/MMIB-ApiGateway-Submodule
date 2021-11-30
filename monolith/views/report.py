@@ -3,11 +3,12 @@ import flask_login
 from monolith.auth import admin_required
 from flask_login.utils import login_required
 from werkzeug.utils import redirect
-from monolith.database import Report, db, User
+from monolith.rao.user_manager import UserManager
 from monolith.forms import ReportForm
 from datetime import datetime
 from monolith.blacklist import add2blacklist_local
 from monolith.views.doc import auto
+
 
 report = Blueprint('report', __name__)
 
@@ -23,7 +24,7 @@ def reports():
 
     :return: a rendered view
     """
-    query_reports = db.session.query(Report).order_by(Report.id.desc())
+    query_reports = UserManager.get_reports()
     return render_template("reports.html", reports=query_reports)
 
 
@@ -51,8 +52,7 @@ def report_user():
             current_user_email = current_user.email
 
             # check if the reported email exists
-            q = db.session.query(User).filter(User.email == reported_user)
-            if q.first() is None:
+            if not UserManager.exist_by_mail(reported_user):
                 form.user.errors.append("Reported user does not exist")
                 return render_template('error_template.html', form=form)
 
@@ -62,16 +62,10 @@ def report_user():
                 return render_template('error_template.html', form=form)
 
             # create the report
-            report = Report()
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            report.add_report(
-                current_user_email,
-                reported_user,
-                description,
-                timestamp
-                )
-            db.session.add(report)
-            db.session.commit()
+            UserManager.report_user(current_user_email, reported_user,
+                                    description, timestamp)
+
 
             # blacklist reported user
             if block_user == 'yes':

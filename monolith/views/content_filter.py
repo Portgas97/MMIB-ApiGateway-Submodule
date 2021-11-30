@@ -1,10 +1,11 @@
 from flask_login import current_user
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required
-from monolith.database import User, db
 from monolith.forms import ContentFilterForm
 from better_profanity import profanity
 from werkzeug.exceptions import BadRequestKeyError
+
+from monolith.rao.user_manager import UserManager
 from monolith.views.doc import auto
 
 
@@ -22,21 +23,18 @@ def _content_filter():
     """
     form = ContentFilterForm()
     if request.method == 'POST':  # POST request
-        user = db.session.query(User).filter(User.id ==
-                                             current_user.get_id()).first()
+
         try:
             request.form['content_filter']
         except BadRequestKeyError:
-            setattr(user, 'content_filter', False)
+            UserManager.unset_filter(current_user.get_id())
         else:
-            setattr(user, 'content_filter', True)
+            UserManager.set_filter(current_user.get_id())
 
-        db.session.commit()
         return redirect(url_for("content_filter._content_filter"))
     else:  # GET request
-        content_filter_status = db.session.query(User).filter(
-            User.id == current_user.get_id()
-        ).first().content_filter
+        user = UserManager.get_by_id(current_user.get_id())
+        content_filter_status = user['content_filter']
         return render_template('content_filter.html',
                                status=content_filter_status, form=form)
 
@@ -68,9 +66,8 @@ def check_content_filter(receiver_address, message_to_send):
     :rtype: bool
     """
     # check recipient content filter
-    content_filter_status = db.session.query(User).filter(
-        User.email == receiver_address
-    ).first().content_filter
+    user = UserManager.get_by_mail(receiver_address)
+    content_filter_status = user['content_filter']
     if content_filter_status:
         if profanity.contains_profanity(message_to_send):
             return False

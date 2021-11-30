@@ -309,6 +309,34 @@ class User(object):
 
         return result
 
+    @staticmethod
+    def from_dict(dict):
+        user = User()
+        if dict.get('id', None) is not None:
+            return None
+        if dict.get('email', None) is not None:
+            return None
+        if dict.get('firstname', None) is not None:
+            return None
+        if dict.get('lastname', None) is not None:
+            return None
+        if dict.get('password', None) is not None:
+            return None
+        if dict.get('date_of_birth', None) is not None:
+            return None
+
+        user.id = dict['id']
+        user.email = dict['email']
+        user.firstname = dict['firstname']
+        user.lastname = dict['lastname']
+        user.password = dict['password']
+        user.date_of_birth = dict['date_of_birth']
+        user.points = dict.get('points', 0)
+        user.content_filter = dict.get('content_filter', False)
+        user.is_admin = dict.get('is_admin', False)
+        return User
+
+
     def to_str(self):
         """Returns the string representation of the model"""
         return pprint.pformat(self.to_dict())

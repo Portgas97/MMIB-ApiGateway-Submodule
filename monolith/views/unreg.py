@@ -3,7 +3,9 @@ import flask_login
 from flask_login.utils import login_required
 from werkzeug.utils import redirect
 
-from monolith.database import User, db
+from monolith.rao.user_manager import UserManager
+
+from monolith.database import db
 from monolith.forms import UnregisterForm
 from monolith.views.doc import auto
 
@@ -31,13 +33,11 @@ def unregister():
         if form.validate_on_submit():
             password = form.data['password']
             _id = flask_login.current_user.id    # get user unique id
-            # find user in database
-            q = db.session.query(User).filter(User.id == _id)
-            user = q.first()
+            email = flask_login.current_user.email
+
             # if the input password is correct, delete user account
-            if user.authenticate(password):
-                db.session.delete(user)
-                db.session.commit()
+            if UserManager.authenticate(email, password):
+                UserManager.delete_user(_id)
                 return redirect('/')
             # if the input password password is wrong, return a 401 status code
             else:
