@@ -37,7 +37,7 @@ def do_task(app):
     # lazy init
     if app is None:
         if _APP is None:
-            from mib.app import create_app
+            from mib import create_app
             _APP = create_app()
             db.init_app(_APP)
         app = _APP
