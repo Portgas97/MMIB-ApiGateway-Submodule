@@ -1,9 +1,9 @@
 from flask import Blueprint, redirect, render_template, request
 from flask_login import login_required, current_user
 
-from monolith.forms import CredentialsForm
-from monolith.database import db, User
-from monolith.views.doc import auto
+from mib.forms import CredentialsForm
+from mib.database import db, User
+from mib.views.doc import auto
 
 credentials = Blueprint('credentials', __name__)
 

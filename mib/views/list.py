@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, \
     url_for, jsonify
 from flask_login import login_required
-from monolith.database import User, db
-from monolith.forms import RecipientsListForm
-from monolith.auth import current_user
+from mib.database import User, db
+from mib.forms import RecipientsListForm
+from mib.auth import current_user
 from werkzeug.exceptions import BadRequestKeyError
-from monolith.views.doc import auto
+from mib.views.doc import auto
 
 list_blueprint = Blueprint('list', __name__)
 

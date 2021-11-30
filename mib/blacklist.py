@@ -1,5 +1,5 @@
 # some checks for the add functionality
-from monolith.database import Blacklist, db, User
+from mib.database import Blacklist, db, User
 
 
 def _check_exist(email):

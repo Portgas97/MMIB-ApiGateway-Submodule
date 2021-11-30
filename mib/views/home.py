@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
-from monolith.auth import current_user
-from monolith.views.alerts import get_notifications_count
-from monolith.views.doc import auto
+from mib.auth import current_user
+from mib.views.alerts import get_notifications_count
+from mib.views.doc import auto
 
 home = Blueprint('home', __name__)
 

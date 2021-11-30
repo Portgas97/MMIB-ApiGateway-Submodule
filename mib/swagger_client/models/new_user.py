@@ -16,7 +16,7 @@ import re  # noqa: F401
 
 import six
 
-from monolith.swagger_client.configuration import Configuration
+from mib.swagger_client.configuration import Configuration
 
 
 class NewUser(object):

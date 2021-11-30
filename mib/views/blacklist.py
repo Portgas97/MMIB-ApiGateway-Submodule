@@ -2,10 +2,10 @@ import flask_login
 from flask import Blueprint, redirect, render_template
 from flask_login import login_required
 
-from monolith.blacklist import add2blacklist_local
-from monolith.database import db, Blacklist
-from monolith.forms import EmailForm
-from monolith.views.doc import auto
+from mib.blacklist import add2blacklist_local
+from mib.database import db, Blacklist
+from mib.forms import EmailForm
+from mib.views.doc import auto
 
 blacklist = Blueprint('blacklist', __name__)
 

@@ -8,7 +8,7 @@ from celery.schedules import crontab
 from sqlalchemy import and_
 from sqlalchemy.exc import NoResultFound
 
-from monolith.database import db, Message, Notification, User
+from mib.database import db, Message, Notification, User
 
 # Check a specifically set environment variable for the address of the backend
 # said address could also be obtained from an env variable
@@ -37,7 +37,7 @@ def do_task(app):
     # lazy init
     if app is None:
         if _APP is None:
-            from monolith.app import create_app
+            from mib.app import create_app
             _APP = create_app()
             db.init_app(_APP)
         app = _APP

@@ -5,17 +5,17 @@ from pathlib import Path
 from slugify import slugify
 from werkzeug.utils import secure_filename
 
-from monolith.background import deliver_message
-from monolith.database import db, User, Message
+from mib.background import deliver_message
+from mib.database import db, User, Message
 import pytz
 
-from monolith.blacklist import is_blacklisted
-from monolith.views.content_filter import check_content_filter
+from mib.blacklist import is_blacklisted
+from mib.views.content_filter import check_content_filter
 
 if 'pytest' in sys.modules:
-    UPLOAD_FOLDER = './monolith/static/images/test_uploads/'
+    UPLOAD_FOLDER = './mib/static/images/test_uploads/'
 else:
-    UPLOAD_FOLDER = './monolith/static/images/uploads/'
+    UPLOAD_FOLDER = './mib/static/images/uploads/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB
 

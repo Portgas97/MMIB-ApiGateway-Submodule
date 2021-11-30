@@ -2,12 +2,12 @@ import json
 
 from werkzeug.security import check_password_hash
 
-from monolith import app
+from mib import app
 from flask_login import (logout_user)
 from flask import abort
 import requests
 
-from monolith.swagger_client.models import User, NewUser, Report
+from mib.swagger_client.models import User, NewUser, Report
 
 
 class UserManager:

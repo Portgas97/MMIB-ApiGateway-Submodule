@@ -2,15 +2,15 @@ from flask import Blueprint, abort, redirect, request
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from sqlalchemy.exc import NoResultFound
-from monolith.background import create_notification, LOTTERY_PRICE
-from monolith.database import Message, db
-from monolith import send
-from monolith.delete import remove_message, delete_for_receiver, \
+from mib.background import create_notification, LOTTERY_PRICE
+from mib.database import Message, db
+from mib import send
+from mib.delete import remove_message, delete_for_receiver, \
     delete_for_sender
 
-from monolith.forms import ForwardForm, ReplyForm
-from monolith.send import send_messages, save_draft
-from monolith.views.doc import auto
+from mib.forms import ForwardForm, ReplyForm
+from mib.send import send_messages, save_draft
+from mib.views.doc import auto
 
 box = Blueprint('box', __name__)
 

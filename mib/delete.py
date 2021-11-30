@@ -1,4 +1,4 @@
-from monolith.database import db, Message
+from mib.database import db, Message
 
 
 # this method assumes values have been previously checked and are safe

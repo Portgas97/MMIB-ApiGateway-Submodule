@@ -1,10 +1,10 @@
 import flask_login
 from flask import Blueprint, redirect, render_template, request
 from flask_login import login_required
-from monolith.rao.user_manager import UserManager
-from monolith.database import db
-from monolith.forms import UserForm
-from monolith.views.doc import auto
+from mib.rao.user_manager import UserManager
+from mib.database import db
+from mib.forms import UserForm
+from mib.views.doc import auto
 
 users = Blueprint('users', __name__)
 

@@ -15,6 +15,6 @@
 from __future__ import absolute_import
 
 # import models into model package
-from monolith.swagger_client.models.new_user import NewUser
-from monolith.swagger_client.models.report import Report
-from monolith.swagger_client.models.user import User
+from mib.swagger_client.models.new_user import NewUser
+from mib.swagger_client.models.report import Report
+from mib.swagger_client.models.user import User

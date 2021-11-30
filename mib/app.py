@@ -4,12 +4,12 @@ import sys
 from flask import Flask
 from flask_uploads import configure_uploads
 
-from monolith.background import LOTTERY_PRICE
-from monolith.auth import login_manager
-from monolith.database import User, db
-from monolith.views import blueprints
-from monolith.forms import images
-from monolith.send import UPLOAD_FOLDER, MAX_CONTENT_LENGTH
+from mib.background import LOTTERY_PRICE
+from mib.auth import login_manager
+from mib.database import User, db
+from mib.views import blueprints
+from mib.forms import images
+from mib.send import UPLOAD_FOLDER, MAX_CONTENT_LENGTH
 
 
 def create_app():

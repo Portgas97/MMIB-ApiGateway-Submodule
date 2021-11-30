@@ -3,11 +3,11 @@ import flask_login
 from flask_login.utils import login_required
 from werkzeug.utils import redirect
 
-from monolith.rao.user_manager import UserManager
+from mib.rao.user_manager import UserManager
 
-from monolith.database import db
-from monolith.forms import UnregisterForm
-from monolith.views.doc import auto
+from mib.database import db
+from mib.forms import UnregisterForm
+from mib.views.doc import auto
 
 
 unreg = Blueprint('unreg', __name__)

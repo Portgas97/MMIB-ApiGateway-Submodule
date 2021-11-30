@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template
-from monolith.database import Notification, db
+from mib.database import Notification, db
 import flask_login
 from flask_login.utils import login_required
-from monolith.views.doc import auto
+from mib.views.doc import auto
 
 
 alerts = Blueprint('alerts', __name__)

@@ -4,11 +4,11 @@ from flask import Blueprint, render_template, request, redirect, abort
 from flask_login import login_required
 from sqlalchemy.exc import NoResultFound
 
-from monolith.auth import current_user
-from monolith.database import Message
-from monolith.forms import SendForm
-from monolith.send import send_messages, save_draft
-from monolith.views.doc import auto
+from mib.auth import current_user
+from mib.database import Message
+from mib.forms import SendForm
+from mib.send import send_messages, save_draft
+from mib.views.doc import auto
 
 send = Blueprint('send', __name__)
 

@@ -1,10 +1,10 @@
 from flask import Blueprint, redirect, render_template, abort
 from flask_login import login_user, logout_user
-from monolith.swagger_client.models.user import User
+from mib.swagger_client.models.user import User
 
-from monolith.database import db
-from monolith.forms import LoginForm
-from monolith.views.doc import auto
+from mib.database import db
+from mib.forms import LoginForm
+from mib.views.doc import auto
 
 auth = Blueprint('auth', __name__)
 

@@ -1,13 +1,13 @@
 from flask import Blueprint, render_template, request
 import flask_login
-from monolith.auth import admin_required
+from mib.auth import admin_required
 from flask_login.utils import login_required
 from werkzeug.utils import redirect
-from monolith.rao.user_manager import UserManager
-from monolith.forms import ReportForm
+from mib.rao.user_manager import UserManager
+from mib.forms import ReportForm
 from datetime import datetime
-from monolith.blacklist import add2blacklist_local
-from monolith.views.doc import auto
+from mib.blacklist import add2blacklist_local
+from mib.views.doc import auto
 
 
 report = Blueprint('report', __name__)

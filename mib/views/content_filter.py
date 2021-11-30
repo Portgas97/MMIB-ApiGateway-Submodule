@@ -1,12 +1,12 @@
 from flask_login import current_user
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required
-from monolith.forms import ContentFilterForm
+from mib.forms import ContentFilterForm
 from better_profanity import profanity
 from werkzeug.exceptions import BadRequestKeyError
 
-from monolith.rao.user_manager import UserManager
-from monolith.views.doc import auto
+from mib.rao.user_manager import UserManager
+from mib.views.doc import auto
 
 
 content_filter = Blueprint('content_filter', __name__)
@@ -48,7 +48,7 @@ def _content_filter_list():
 
     :return: a rendered view
     """
-    file = open(r"./monolith/static/default_badwords.txt", "r")
+    file = open(r"./mib/static/default_badwords.txt", "r")
     wordlist = []
     for line in file:
         wordlist.append(line)
