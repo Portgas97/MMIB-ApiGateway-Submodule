@@ -6,6 +6,8 @@ from mib.forms import RecipientsListForm
 from mib.auth import current_user
 from werkzeug.exceptions import BadRequestKeyError
 from mib.views.doc import auto
+from mib.rao.user_manager import UserManager
+
 
 list_blueprint = Blueprint('list', __name__)
 
@@ -52,23 +54,21 @@ def ajax_livesearch():
     caller's address
     :rtype: json string
     """
+    user_list = UserManager.get_users_list()
+    # to filter the current_user from the list
+    user_list = filter(lambda user: user["id"] != current_user.id, user_list)
     try:
         search_word = request.form['query']
     except BadRequestKeyError:
-        recipients_found = db.session.query(User).filter(
-            User.id != current_user.get_id()).all()
+        recipients_found = user_list
     else:
         if request.form['query'] == 'void_request':
-            recipients_found = db.session.query(User).filter(
-                User.id != current_user.get_id()).all()
+            recipients_found = user_list
         else:
-            search = "%{}%".format(search_word)
-            recipients_found = db.session.query(User). \
-                filter(User.email.like(search)
-                       | User.firstname.like(search)
-                       | User.lastname.like(search),
-                       User.id != current_user.get_id()). \
-                limit(100).all()  # avoiding a huge result
+            def filter_users(user):
+                return search_word in user["email"] | search_word in user[
+                    "firstname"] | search_word in user["lastname"]
+            recipients_found = filter(filter_users, user_list)
 
     # instantiate the form
     form = RecipientsListForm()
