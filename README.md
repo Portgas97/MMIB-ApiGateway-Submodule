@@ -45,7 +45,6 @@ and now you can run the application
 
 `flask run`
 
-
 **WARNING**: the static contents are inside the directory nginx/static,
 so if you want to run application without nginx you have to copy
 the static directory inside mib folder.
