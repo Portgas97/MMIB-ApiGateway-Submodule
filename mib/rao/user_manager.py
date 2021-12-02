@@ -113,11 +113,11 @@ class UserManager:
 
     @classmethod
     def get_by_mail(cls, email):
-        try:
-            url = ("%s/users/by_mail/" % cls.USERS_ENDPOINT) + email
-            response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
-        except:
-            return abort(500)
+        # try:
+        url = ("%s/users/by_mail/" % cls.USERS_ENDPOINT) + email
+        response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        # except:
+        #     return abort(500)
         if response.status_code == 200:
             return response.json()
         return None

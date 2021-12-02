@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, render_template, abort
 from flask_login import login_user, logout_user
 from mib.swagger_client.models.user import User
+from mib.rao.user_manager import UserManager
 
 from mib.database import db
 from mib.forms import LoginForm
