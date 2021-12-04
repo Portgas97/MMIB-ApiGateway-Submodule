@@ -111,7 +111,7 @@ def create_app():
             db.session.add(example)
             db.session.commit()
     """
-    #app.json_encoder = encoder.JSONEncoder
+    app.json_encoder = encoder.JSONEncoder
     return app
 
 

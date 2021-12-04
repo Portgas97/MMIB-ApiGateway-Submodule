@@ -25,13 +25,10 @@ class UserManager:
 
     @classmethod
     def create_user(cls, email, firstname, lastname, date_of_birth, password):
-        #user = NewUser(email, firstname, lastname, password, date_of_birth)
-        user = {'email': email, 'firstname': firstname, 'lastname':lastname, 'password':password, 'date_of_birth': date_of_birth}
+        user = NewUser(email, firstname, lastname, password, date_of_birth)
         user = json.dumps(user)
-        user = json.loads(user)
         try:
             url = "%s/users" % cls.USERS_ENDPOINT
-            print(user, file=sys.stderr)
             response = requests.post(url,
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
                                      json=user)
