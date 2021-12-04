@@ -4,6 +4,8 @@
 # import datetime
 # import sys
 import os
+import sys
+
 from flask import Flask
 # from flask_uploads import configure_uploads
 from flask_bootstrap import Bootstrap
@@ -47,13 +49,13 @@ def create_app():
 
     # now these are set in config.py
     # disable CSRF protection when the app is running in dev or test mode
-    # if _app.config['ENV'] == 'development' or "pytest" in sys.modules:
-    #    _app.config['WTF_CSRF_ENABLED'] = False
-    # if "pytest" in sys.modules:
-    #    _app.config['TESTING'] = True
-    #    _app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../T_mmiab.db'
-    # else:
-    #    _app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../mmiab.db'
+    if app.config['ENV'] == 'development' or "pytest" in sys.modules:
+        app.config['WTF_CSRF_ENABLED'] = False
+    if "pytest" in sys.modules:
+        app.config['TESTING'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../T_mmiab.db'
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../mmiab.db'
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../mmiab.db'
 
@@ -77,8 +79,11 @@ def create_app():
     register_blueprints(app)
     register_handlers(app)
 
-    import mib.auth as lm
+    from mib.database import db
+    db.init_app(app)
+    import mib.auth.login_manager as lm
     login = lm.init_login_manager(app)
+    db.create_all(app=app)
 
     if flask_env == 'testing' or flask_env == 'development':
         register_test_blueprints(app)
@@ -89,28 +94,10 @@ def create_app():
     #    _app.register_blueprint(bp)
     #    bp.app = _app
 
-    # db.init_app(_app)
-    # login_manager.init_app(_app)
-    # db.create_all(app=_app)
 
-    # create a first admin user
-    """
-    with _app.app_context():
-        q = db.session.query(User).filter(User.email == 'example@example.com')
-        user = q.first()
-        if user is None:
-            example = User()
-            example.firstname = 'Admin'
-            example.lastname = 'Admin'
-            example.email = 'example@example.com'
-            example.date_of_birth = datetime.datetime(2020, 10, 5)
-            example.is_admin = True
-            example.content_filter = False
-            example.set_password('admin')
-            example.set_points(10 * LOTTERY_PRICE)
-            db.session.add(example)
-            db.session.commit()
-    """
+
+
+
     app.json_encoder = encoder.JSONEncoder
     return app
 

@@ -22,13 +22,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         email, password = form.data['email'], form.data['password']
-        if UserManager.authenticate(email, password):
-            user = UserManager.get_by_mail(email)
-            user = User.from_dict(user)
-            user = _user2dbuser(user)
-            user._authenticated = True
-            user.is_active = True
-            user.is_anonymous = False
+        user = UserManager.authenticate(email, password)
+        if user is not None:
             login_user(user)
             return redirect('/')
         else:

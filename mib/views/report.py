@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request
 import flask_login
-from mib.auth import admin_required
 from flask_login.utils import login_required
 from werkzeug.utils import redirect
+
+from mib.auth.login_manager import admin_required
 from mib.rao.user_manager import UserManager
 from mib.forms import ReportForm
 from datetime import datetime
@@ -13,7 +14,6 @@ from mib.views.doc import auto
 report = Blueprint('report', __name__)
 
 
-# noinspection PyUnresolvedReferences
 @report.route('/reports', methods=['GET'])
 @auto.doc(groups=['routes'])
 @login_required

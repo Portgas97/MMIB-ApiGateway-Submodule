@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, \
 from flask_login import login_required
 from werkzeug.exceptions import BadRequestKeyError
 
-from mib.auth import current_user
+from flask_login import current_user
 from mib.forms import RecipientsListForm
 from mib.rao.user_manager import UserManager
 from mib.views.doc import auto

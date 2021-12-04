@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from mib.auth import current_user
+from flask_login import current_user
 from mib.views.alerts import get_notifications_count
 from mib.views.doc import auto
 

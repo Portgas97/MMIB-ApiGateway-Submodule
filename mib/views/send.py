@@ -1,10 +1,9 @@
 from datetime import datetime
 
 from flask import Blueprint, render_template, request, redirect, abort
-from flask_login import login_required
+from flask_login import login_required, current_user
 from sqlalchemy.exc import NoResultFound
 
-from mib.auth import current_user
 from mib.database import Message
 from mib.forms import SendForm
 from mib.send import send_messages, save_draft

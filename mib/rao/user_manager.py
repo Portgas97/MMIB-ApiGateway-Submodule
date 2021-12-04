@@ -3,6 +3,8 @@ from werkzeug.security import check_password_hash
 from mib import app
 from flask import abort
 import requests
+
+from mib.auth.userauth import UserAuth
 from mib.models.new_user import NewUser
 from mib.models.user import User
 from mib.models.report import Report
@@ -27,6 +29,8 @@ class UserManager:
     def create_user(cls, email, firstname, lastname, date_of_birth, password):
         user = NewUser(email, firstname, lastname, password, date_of_birth)
         user = json.dumps(user)
+        user = json.loads(user)
+        print(user, file=sys.stderr)
         try:
             url = "%s/users" % cls.USERS_ENDPOINT
             response = requests.post(url,
@@ -51,7 +55,7 @@ class UserManager:
     @classmethod
     def delete_user(cls, id):
         try:
-            url = "%s/users/%s" % (cls.USERS_ENDPOINT, str(id))
+            url = "%s/users/by_id/%s" % (cls.USERS_ENDPOINT, str(id))
             response = requests.delete(url,
                                        timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
@@ -74,9 +78,11 @@ class UserManager:
         #     user.date_of_birth = date_of_birth
         try:
             url = "%s/users" % cls.USERS_ENDPOINT
+            user = json.dumps(user)
+            user = json.loads(user)
             response = requests.put(url,
                                     timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                    data=json.dumps(user))
+                                    json=user)
         except Exception:
             return abort(500)
         return response.status_code == 200
@@ -160,9 +166,11 @@ class UserManager:
         # report.timestamp = timestamp
         try:
             url = "%s/report" % cls.USERS_ENDPOINT
+            report = json.dumps(report)
+            report = json.loads(report)
             response = requests.post(url,
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                     data=json.dumps(report))
+                                     json=report)
         except Exception:
             return abort(500)
         return response.status_code == 200
@@ -189,4 +197,6 @@ class UserManager:
         if user is None:
             return False
         hash = user['password']
-        return check_password_hash(hash, password)
+        if not check_password_hash(hash, password):
+            return None
+        return UserAuth(id=user['id'], email=user['email'])
