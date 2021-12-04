@@ -2,10 +2,8 @@ from flask import Blueprint, redirect, render_template, request
 from flask_login import login_required, current_user
 
 from mib.forms import CredentialsForm
-from mib.database import db, User
-from mib.views.doc import auto
 from mib.rao.user_manager import UserManager
-
+from mib.views.doc import auto
 
 credentials = Blueprint('credentials', __name__)
 

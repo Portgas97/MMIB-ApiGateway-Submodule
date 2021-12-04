@@ -1,9 +1,12 @@
-import json
+from flask import json
 from werkzeug.security import check_password_hash
 from mib import app
 from flask import abort
 import requests
-from mib.swagger_client.models import User, NewUser, Report
+from mib.models.new_user import NewUser
+from mib.models.user import User
+from mib.models.report import Report
+import sys
 
 
 class UserManager:
@@ -22,12 +25,16 @@ class UserManager:
 
     @classmethod
     def create_user(cls, email, firstname, lastname, date_of_birth, password):
-        user = NewUser(email, firstname, lastname, password, date_of_birth)
+        #user = NewUser(email, firstname, lastname, password, date_of_birth)
+        user = {'email': email, 'firstname': firstname, 'lastname':lastname, 'password':password, 'date_of_birth': date_of_birth}
+        user = json.dumps(user)
+        user = json.loads(user)
         try:
             url = "%s/users" % cls.USERS_ENDPOINT
+            print(user, file=sys.stderr)
             response = requests.post(url,
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                     data=json.dumps(user))
+                                     json=user)
         except Exception:
             return abort(500)
         return response.status_code == 200
@@ -112,7 +119,7 @@ class UserManager:
             url = ("%s/users/by_mail/" % cls.USERS_ENDPOINT) + email
             response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except:
-          return abort(500)
+            return abort(500)
         if response.status_code == 200:
             return response.json()
         return None

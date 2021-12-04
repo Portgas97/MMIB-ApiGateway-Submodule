@@ -1,9 +1,9 @@
 import flask_login
 from flask import Blueprint, redirect, render_template, request
 from flask_login import login_required
-from mib.rao.user_manager import UserManager
-from mib.database import db
+
 from mib.forms import UserForm
+from mib.rao.user_manager import UserManager
 from mib.views.doc import auto
 
 users = Blueprint('users', __name__)
@@ -37,12 +37,11 @@ def create_user():
 
     if request.method == 'POST':
         if form.validate_on_submit():
-
-            if UserManager.create_user(form.email,
-                                       form.firstname,
-                                       form.lastname,
-                                       form.date_of_birth,
-                                       form.password):
+            if UserManager.create_user(form.data['email'],
+                                       form.data['firstname'],
+                                       form.data['lastname'],
+                                       form.data['date_of_birth'],
+                                       form.data['password']):
                 return redirect('/users')
             else:
                 form.email.errors.append("Mail already in use.")

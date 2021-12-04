@@ -1,11 +1,10 @@
 from flask import Blueprint, redirect, render_template, abort
 from flask_login import login_user, logout_user
-from mib.swagger_client.models.user import User
-from mib.rao.user_manager import UserManager
-from mib.database import User as DBUser
 
-from mib.database import db
+from mib.database import User as DBUser
 from mib.forms import LoginForm
+from mib.models.user import User
+from mib.rao.user_manager import UserManager
 from mib.views.doc import auto
 
 auth = Blueprint('auth', __name__)

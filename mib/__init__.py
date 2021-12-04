@@ -9,6 +9,8 @@ from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_environments import Environments
 
+from mib import encoder
+
 """
 from mib.background import LOTTERY_PRICE
 from mib.auth import login_manager as lm
@@ -109,7 +111,7 @@ def create_app():
             db.session.add(example)
             db.session.commit()
     """
-
+    #app.json_encoder = encoder.JSONEncoder
     return app
 
 

@@ -1,13 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, \
     url_for, jsonify
 from flask_login import login_required
-from mib.database import User, db
-from mib.forms import RecipientsListForm
-from mib.auth import current_user
 from werkzeug.exceptions import BadRequestKeyError
-from mib.views.doc import auto
-from mib.rao.user_manager import UserManager
 
+from mib.auth import current_user
+from mib.forms import RecipientsListForm
+from mib.rao.user_manager import UserManager
+from mib.views.doc import auto
 
 list_blueprint = Blueprint('list', __name__)
 

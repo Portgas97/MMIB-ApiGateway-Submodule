@@ -1,14 +1,11 @@
-from flask import Blueprint, render_template, request, abort
 import flask_login
+from flask import Blueprint, render_template, request, abort
 from flask_login.utils import login_required
 from werkzeug.utils import redirect
 
-from mib.rao.user_manager import UserManager
-
-from mib.database import db
 from mib.forms import UnregisterForm
+from mib.rao.user_manager import UserManager
 from mib.views.doc import auto
-
 
 unreg = Blueprint('unreg', __name__)
 

@@ -73,7 +73,7 @@
                      // add received messages
                      {% for message in received_messages %}
                         {
-                            name: "Message Received", 
+                            "Message Received",
                             date: "{{ message.time }}", 
                             description: "<b>From: {{ message.sender_email }}</b> <br><br> <a href=\"/inbox/{{message.id}}\" style=\"color: white;\">read this message</a>",
                             type: "holiday",
@@ -82,7 +82,7 @@
                     
                      {% for message in sent_messages %}
                         {
-                            name: "Message Sent", 
+                            "Message Sent",
                             date: "{{ message.time }}", 
                             description: "<b>To: {{ message.receiver_email }}</b> <br><br> <a href=\"/outbox/{{message.id}}\" style=\"color: white;\">read this message</a>",
                             type: "event",

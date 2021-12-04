@@ -66,3 +66,7 @@ WTForms==2.3.3
 
 git+https://github.com/giuseppe-crea/flask-autodoc.git#egg=Flask-Autodoc
 
+
+setuptools~=58.4.0
+docker~=5.0.3
+connexion~=2.9.0

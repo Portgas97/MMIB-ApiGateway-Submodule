@@ -560,7 +560,7 @@
                         eventAdder(_.options.calendarEvents[i])
                     }
                 }
-            };
+            }
         }
         function eventAdder(event) {
             hasEventToday = true;
