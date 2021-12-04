@@ -311,30 +311,30 @@ class User(object):
 
     @staticmethod
     def from_dict(dict):
-        user = User()
-        if dict.get('id', None) is not None:
-            return None
-        if dict.get('email', None) is not None:
-            return None
-        if dict.get('firstname', None) is not None:
-            return None
-        if dict.get('lastname', None) is not None:
-            return None
-        if dict.get('password', None) is not None:
-            return None
-        if dict.get('date_of_birth', None) is not None:
-            return None
+        user = User(dict.get('id'), dict.get('email'), dict.get('firstname'), dict.get('lastname'), dict.get('password'), dict.get('date_of_birth'), dict.get('points', 0), dict.get('content_filte'), dict.get('is_admin'))
+        # if dict.get('id', None) is not None:
+        #     return None
+        # if dict.get('email', None) is not None:
+        #     return None
+        # if dict.get('firstname', None) is not None:
+        #     return None
+        # if dict.get('lastname', None) is not None:
+        #     return None
+        # if dict.get('password', None) is not None:
+        #     return None
+        # if dict.get('date_of_birth', None) is not None:
+        #     return None
 
-        user.id = dict['id']
-        user.email = dict['email']
-        user.firstname = dict['firstname']
-        user.lastname = dict['lastname']
-        user.password = dict['password']
-        user.date_of_birth = dict['date_of_birth']
-        user.points = dict.get('points', 0)
-        user.content_filter = dict.get('content_filter', False)
-        user.is_admin = dict.get('is_admin', False)
-        return User
+        # user.id = dict['id']
+        # user.email = dict['email']
+        # user.firstname = dict['firstname']
+        # user.lastname = dict['lastname']
+        # user.password = dict['password']
+        # user.date_of_birth = dict['date_of_birth']
+        # user.points = dict.get('points', 0)
+        # user.content_filter = dict.get('content_filter', False)
+        # user.is_admin = dict.get('is_admin', False)
+        return user
 
 
     def to_str(self):

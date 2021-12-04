@@ -2,6 +2,7 @@ from flask import Blueprint, redirect, render_template, abort
 from flask_login import login_user, logout_user
 from mib.swagger_client.models.user import User
 from mib.rao.user_manager import UserManager
+from mib.database import User as DBUser
 
 from mib.database import db
 from mib.forms import LoginForm
@@ -25,6 +26,10 @@ def login():
         if UserManager.authenticate(email, password):
             user = UserManager.get_by_mail(email)
             user = User.from_dict(user)
+            user = _user2dbuser(user)
+            user._authenticated = True
+            user.is_active = True
+            user.is_anonymous = False
             login_user(user)
             return redirect('/')
         else:
@@ -42,3 +47,15 @@ def logout():
     """
     logout_user()
     return redirect('/')
+
+def _user2dbuser(data):
+    """
+    Convert a User object to a DBUser object
+    """
+    user = DBUser()
+    user.email = data.email
+    user.firstname = data.firstname
+    user.lastname = data.lastname
+    user.set_password(data.password)
+    user.date_of_birth = data.date_of_birth
+    return user

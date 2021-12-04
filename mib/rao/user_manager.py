@@ -22,17 +22,12 @@ class UserManager:
 
     @classmethod
     def create_user(cls, email, firstname, lastname, date_of_birth, password):
-        user = NewUser()
-        user.email = email
-        user.firstname = firstname
-        user.lastname = lastname
-        user.password = password
-        user.date_of_birth = date_of_birth
+        user = NewUser(email, firstname, lastname, password, date_of_birth)
         try:
             url = "%s/users" % cls.USERS_ENDPOINT
             response = requests.post(url,
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                     data=json.dump(user))
+                                     data=json.dumps(user))
         except Exception:
             return abort(500)
         return response.status_code == 200
@@ -61,23 +56,23 @@ class UserManager:
     @classmethod
     def edit_user(cls, id, email=None, firstname=None,
                   lastname=None, date_of_birth=None, password=None):
-        user = User()
-        user.id = id
-        if email is not None:
-            user.email = email
-        if firstname is not None:
-            user.firstname = firstname
-        if lastname is not None:
-            user.lastname = lastname
-        if password is not None:
-            user.password = password
-        if date_of_birth is not None:
-            user.date_of_birth = date_of_birth
+        user = User(id, email, firstname, lastname, password, date_of_birth)
+        # user.id = id
+        # if email is not None:
+        #     user.email = email
+        # if firstname is not None:
+        #     user.firstname = firstname
+        # if lastname is not None:
+        #     user.lastname = lastname
+        # if password is not None:
+        #     user.password = password
+        # if date_of_birth is not None:
+        #     user.date_of_birth = date_of_birth
         try:
             url = "%s/users" % cls.USERS_ENDPOINT
             response = requests.put(url,
                                     timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                    data=json.dump(user))
+                                    data=json.dumps(user))
         except Exception:
             return abort(500)
         return response.status_code == 200
@@ -113,11 +108,11 @@ class UserManager:
 
     @classmethod
     def get_by_mail(cls, email):
-        # try:
-        url = ("%s/users/by_mail/" % cls.USERS_ENDPOINT) + email
-        response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
-        # except:
-        #     return abort(500)
+        try:
+            url = ("%s/users/by_mail/" % cls.USERS_ENDPOINT) + email
+            response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+        except:
+          return abort(500)
         if response.status_code == 200:
             return response.json()
         return None
@@ -150,20 +145,20 @@ class UserManager:
             response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
             return abort(500)
-        return response.content
+        return response.json()
 
     @classmethod
     def report_user(cls, author, reported, description, timestamp):
-        report = Report()
-        report.author_email = author
-        report.reported_email = reported
-        report.description = description
-        report.timestamp = timestamp
+        report = Report(None, author, reported, description, timestamp)
+        # report.author_email = author
+        # report.reported_email = reported
+        # report.description = description
+        # report.timestamp = timestamp
         try:
             url = "%s/report" % cls.USERS_ENDPOINT
             response = requests.post(url,
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                     data=json.dump(report))
+                                     data=json.dumps(report))
         except Exception:
             return abort(500)
         return response.status_code == 200

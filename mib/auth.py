@@ -6,6 +6,8 @@ from mib.database import User
 
 from flask_login import LoginManager
 from mib.rao.user_manager import UserManager
+from mib.database import User as DBUser
+
 
 
 def init_login_manager(app):
@@ -22,7 +24,14 @@ def init_login_manager(app):
         :param user_id: user id
         :return: the user object
         """
-        user = UserManager.get_user_by_id(user_id)
+        user = UserManager.get_by_id(user_id)
+        if user is None:
+            return None
+        user = User.from_dict(user)
+        user = _user2dbuser(user)
+        user._authenticated = True
+        user.is_active = True
+        user.is_anonymous = False
         user.authenticated = True
         return user
 
@@ -45,7 +54,25 @@ def admin_required(func):
 
 @login_manager.user_loader
 def load_user(user_id):
-    user = User.query.get(user_id)
-    if user is not None:
-        user._authenticated = True
+    user = UserManager.get_by_id(user_id)
+    if user is None:
+        return None
+    user = User.from_dict(user)
+    user = _user2dbuser(user)
+    user._authenticated = True
+    user.is_active = True
+    user.is_anonymous = False
+    user.authenticated = True
+    return user
+
+def _user2dbuser(data):
+    """
+    Convert a User object to a DBUser object
+    """
+    user = DBUser()
+    user.email = data.email
+    user.firstname = data.firstname
+    user.lastname = data.lastname
+    user.set_password(data.password)
+    user.date_of_birth = data.date_of_birth
     return user
