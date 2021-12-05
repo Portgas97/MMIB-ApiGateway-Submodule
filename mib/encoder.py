@@ -18,3 +18,5 @@ class JSONEncoder(flask.json.JSONEncoder):
                 dikt[attr] = value
             return dikt
         return super().default(o)
+
+headers = {'Content-Type': 'application/json'}

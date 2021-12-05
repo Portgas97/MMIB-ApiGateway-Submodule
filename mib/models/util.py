@@ -142,7 +142,4 @@ def _deserialize_dict(data, boxed_type):
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
 
-def to_json(obj):
-    obj = json.dumps(obj)
-    return json.loads(obj)
 
