@@ -6,3 +6,4 @@ from __future__ import absolute_import
 from mib.models.new_user import NewUser
 from mib.models.report import Report
 from mib.models.user import User
+from mib.models.notification import Notification

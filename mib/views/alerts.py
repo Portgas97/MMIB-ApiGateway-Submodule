@@ -3,6 +3,7 @@ from mib.database import Notification, db
 import flask_login
 from flask_login.utils import login_required
 from mib.views.doc import auto
+from mib.rao.notifications_manager import NotificationsManager
 
 
 alerts = Blueprint('alerts', __name__)
@@ -21,16 +22,7 @@ def notifications():
     current_user = flask_login.current_user
     current_user_email = current_user.email
 
-    # clean read notifications
-    db.session.query(Notification).filter_by(user_email=current_user_email,
-                                             is_read=True).delete()
-    # load unread notifications
-    query_notifications = db.session.query(Notification).filter_by(
-            user_email=current_user_email).order_by(Notification.id.desc())
-    # set notifications as read
-    db.session.query(Notification).filter_by(
-           user_email=current_user_email).update(dict(is_read=True))
-    db.session.commit()
+    query_notifications = NotificationsManager.get_notifications(current_user_email)
 
     return render_template("notifications.html",
                            notifications=query_notifications)
