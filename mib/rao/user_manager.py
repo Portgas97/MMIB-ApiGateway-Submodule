@@ -1,19 +1,21 @@
+import requests
+from flask import abort
 from flask import json
 from werkzeug.security import check_password_hash
-from mib import app
-from flask import abort
-import requests
 
+from mib import app
+from mib import encoder
 from mib.auth.userauth import UserAuth
 from mib.models.new_user import NewUser
-from mib.models.user import User
 from mib.models.report import Report
-import sys
-
-from mib import encoder
+from mib.models.user import User
 
 
 class UserManager:
+    """
+    This class is an interface with the User-Service microservice.
+    See the User-Service's documentation for more details on the methods.
+    """
     USERS_ENDPOINT = app.config['USERS_MS_URL']
     REQUESTS_TIMEOUT_SECONDS = app.config['REQUESTS_TIMEOUT_SECONDS']
 
@@ -46,7 +48,7 @@ class UserManager:
             url = "%s/points/%s" % (cls.USERS_ENDPOINT, str(id))
             response = requests.delete(url,
                                        timeout=cls.REQUESTS_TIMEOUT_SECONDS)
-        except:
+        except Exception:
             return abort(500)
         if response.status_code == 404:
             return abort(404)
@@ -56,8 +58,7 @@ class UserManager:
     def delete_user(cls, id):
         try:
             url = "%s/users/by_id/%s" % (cls.USERS_ENDPOINT, str(id))
-            response = requests.delete(url,
-                                       timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+            requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
             return abort(500)
 
@@ -109,7 +110,7 @@ class UserManager:
         try:
             url = ("%s/users/by_mail/" % cls.USERS_ENDPOINT) + email
             response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
-        except:
+        except Exception:
             return abort(500)
         if response.status_code == 200:
             return response.json()
@@ -176,6 +177,13 @@ class UserManager:
 
     @classmethod
     def authenticate(cls, email, password):
+        """
+        Authenticate a user by email and password,
+        return the corresponding UserAuth object.
+        :param email: the email of the user
+        :param password: the password of the user
+        :return: the UserAuth object corresponding to the email owner
+        """
         user = cls.get_by_mail(email)
         if user is None:
             return False

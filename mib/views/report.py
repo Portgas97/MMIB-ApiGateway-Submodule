@@ -10,7 +10,6 @@ from datetime import datetime
 from mib.blacklist import add2blacklist_local
 from mib.views.doc import auto
 
-
 report = Blueprint('report', __name__)
 
 
@@ -26,7 +25,6 @@ def reports():
     """
     query_reports = UserManager.get_reports()
     return render_template("reports.html", reports=query_reports)
-
 
 
 @report.route('/report_user', methods=['GET', 'POST'])
@@ -51,11 +49,6 @@ def report_user():
             current_user = flask_login.current_user
             current_user_email = current_user.email
 
-            # check if the reported email exists
-            if not UserManager.exist_by_mail(reported_user):
-                form.user.errors.append("Reported user does not exist")
-                return render_template('error_template.html', form=form)
-
             # a user cannot report himself
             if reported_user == current_user_email:
                 form.user.errors.append("Cannot report yourself")
@@ -63,9 +56,10 @@ def report_user():
 
             # create the report
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            UserManager.report_user(current_user_email, reported_user,
-                                    description, timestamp)
-
+            if not UserManager.report_user(current_user_email, reported_user,
+                                           description, timestamp):
+                form.user.errors.append("Invalid mail error")
+                return render_template('error_template.html', form=form)
 
             # blacklist reported user
             if block_user == 'yes':
