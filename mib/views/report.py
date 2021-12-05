@@ -28,7 +28,7 @@ def reports():
     return render_template("reports.html", reports=query_reports)
 
 
-# noinspection PyUnresolvedReferences
+
 @report.route('/report_user', methods=['GET', 'POST'])
 @auto.doc(groups=['routes'])
 @login_required

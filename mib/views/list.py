@@ -65,8 +65,8 @@ def ajax_livesearch():
             recipients_found = user_list
         else:
             def filter_users(user):
-                return search_word in user["email"] | search_word in user[
-                    "firstname"] | search_word in user["lastname"]
+                return search_word in user["email"] or search_word in user[
+                    "firstname"] or search_word in user["lastname"]
             recipients_found = filter(filter_users, user_list)
 
     # instantiate the form
@@ -74,7 +74,7 @@ def ajax_livesearch():
 
     # sets choices
     form.multiple_field_form.choices = \
-        [(user.email, user.lastname + ' ' + user.firstname + ': ' + user.email)
+        [(user['email'], user['lastname'] + ' ' + user['firstname'] + ': ' + user['email'])
          for user in recipients_found]
 
     return jsonify(

@@ -37,10 +37,11 @@ def create_user():
 
     if request.method == 'POST':
         if form.validate_on_submit():
+            date = form.data['date_of_birth'].strftime('%d/%m/%Y')
             if UserManager.create_user(form.data['email'],
                                        form.data['firstname'],
                                        form.data['lastname'],
-                                       form.data['date_of_birth'],
+                                       date,
                                        form.data['password']):
                 return redirect('/users')
             else:
@@ -63,11 +64,11 @@ def _user_data2dict(data):
     :rtype: dict
     """
     return {
-        "first name": data.firstname,
-        "last name": data.lastname,
-        "email": data.email,
-        "date of birth": data.date_of_birth.date(),
-        "lottery points": str(data.points)
+        "first name": data['firstname'],
+        "last name": data['lastname'],
+        "email": data['email'],
+        "date of birth": data['date_of_birth'],
+        "lottery points": str(data['points'])
     }
 
 

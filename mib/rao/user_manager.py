@@ -10,6 +10,8 @@ from mib.models.user import User
 from mib.models.report import Report
 import sys
 
+from mib.models.util import to_json
+
 
 class UserManager:
     USERS_ENDPOINT = app.config['USERS_MS_URL']
@@ -28,8 +30,7 @@ class UserManager:
     @classmethod
     def create_user(cls, email, firstname, lastname, date_of_birth, password):
         user = NewUser(email, firstname, lastname, password, date_of_birth)
-        user = json.dumps(user)
-        user = json.loads(user)
+        user = to_json(user)
         print(user, file=sys.stderr)
         try:
             url = "%s/users" % cls.USERS_ENDPOINT
@@ -78,8 +79,7 @@ class UserManager:
         #     user.date_of_birth = date_of_birth
         try:
             url = "%s/users" % cls.USERS_ENDPOINT
-            user = json.dumps(user)
-            user = json.loads(user)
+            user = to_json(user)
             response = requests.put(url,
                                     timeout=cls.REQUESTS_TIMEOUT_SECONDS,
                                     json=user)
@@ -146,7 +146,7 @@ class UserManager:
             response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
             return abort(500)
-        return response.content
+        return response.json()
 
     @classmethod
     def get_users_list(cls):
@@ -166,8 +166,7 @@ class UserManager:
         # report.timestamp = timestamp
         try:
             url = "%s/report" % cls.USERS_ENDPOINT
-            report = json.dumps(report)
-            report = json.loads(report)
+            report = to_json(report)
             response = requests.post(url,
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
                                      json=report)
@@ -199,4 +198,4 @@ class UserManager:
         hash = user['password']
         if not check_password_hash(hash, password):
             return None
-        return UserAuth(id=user['id'], email=user['email'])
+        return UserAuth(**user)

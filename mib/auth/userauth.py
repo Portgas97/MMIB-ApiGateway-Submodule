@@ -31,7 +31,8 @@ class UserAuth(UserMixin):
         self.authenticated = kw.get("authenticated", True)
         self.is_anonymous = kw.get("is_anonymous", True)
         self.extra_data = kw.get('extra')
-        self.firstname = "Admin"
+        self.firstname = kw['firstname']
+        self.is_admin = kw.get('is_admin', False)
 
     def get_id(self):
         return self.id

@@ -23,7 +23,7 @@ def init_login_manager(app):
         user = UserManager.get_by_id(user_id)
         if user is None:
             return None
-        usrauth = UserAuth(id=user['id'], email=user['email'])
+        usrauth = UserAuth(**user)
         usrauth.authenticated = True
         return usrauth
 

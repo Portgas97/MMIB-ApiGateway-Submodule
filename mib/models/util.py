@@ -3,6 +3,8 @@ import datetime
 import six
 import typing
 
+from flask import json
+
 
 def _deserialize(data, klass):
     """Deserializes dict, list, str into an object.
@@ -139,3 +141,8 @@ def _deserialize_dict(data, boxed_type):
     """
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
+
+def to_json(obj):
+    obj = json.dumps(obj)
+    return json.loads(obj)
+
