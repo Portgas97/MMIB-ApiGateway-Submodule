@@ -28,11 +28,11 @@ class Config(object):
                                    USERS_MS_PORT)
 
     # messages
-    MESSAGES_MS_PROTO = os.getenv('RESTAURANTS_MS_PROTO', 'http')
-    MESSAGES_MS_HOST = os.getenv('RESTAURANTS_MS_HOST', 'localhost')
-    MESSAGES_MS_PORT = os.getenv('RESTAURANTS_MS_PORT', 5002)
+    MESSAGES_MS_PROTO = os.getenv('MESSAGES_MS_PROTO', 'http')
+    MESSAGES_MS_HOST = os.getenv('MESSAGES_MS_HOST', 'localhost')
+    MESSAGES_MS_PORT = os.getenv('MESSAGES_MS_PORT', 5002)
     MESSAGES_MS_URL = '%s://%s:%s' % (MESSAGES_MS_PROTO,
-                                     MESSAGES_MS_HOST,
+                                      MESSAGES_MS_HOST,
                                       MESSAGES_MS_PORT)
 
     # notifications
