@@ -11,6 +11,7 @@ from mib.delete import remove_message, delete_for_receiver, \
 from mib.forms import ForwardForm, ReplyForm
 from mib.send import send_messages, save_draft
 from mib.views.doc import auto
+from mib.rao.message_manager import MessageManager as mm
 
 box = Blueprint('box', __name__)
 
@@ -22,23 +23,17 @@ box = Blueprint('box', __name__)
 @login_required
 def prep_inbox(_id):
     """
-    Prepares the query arguments to populate the message list as if the user
+    Queries the message microservice and prepares the view
     had accessed the inbox functionality
-    If the optional message id is passed, the query will return only the
-    specific message with that id
-    Performs all necessary checks to make sure the user is authorized to view
-    a specific message
+    We lack the API call to query a single message for security reasons
 
     :param _id: optional message id
     :return: a rendered view
     """
     user_mail = current_user.get_email()
-    role = '/inbox'
-    kwargs = {'status': 2, 'receiver_email': user_mail,
-              'visible_to_receiver': True}
-    if _id is not None:
-        kwargs['id'] = int(_id)
-    return get_box(kwargs, role)
+    role = 'inbox'
+    messages = mm.get_box(user_mail, role)
+    return display_box(messages, role, _id)
 
 
 @box.route("/outbox", methods=["GET"], defaults={'_id': None})
@@ -111,6 +106,16 @@ def get_box(kwargs, role):
             pending=pending_messages,
             role=role
         )
+
+
+def display_box(messages, role, optional_id):
+    if optional_id is not None:
+        # find the message with that id, display a view of only that message
+        for message in messages:
+            if message['id'] == optional_id:
+                if role == 'inbox':
+                    return
+    return
 
 
 def notify_sender(message):
