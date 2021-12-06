@@ -116,7 +116,7 @@
     </nav>
 
     <div>
-        {% if role == "/inbox" %}
+        {% if role == "inbox" %}
             <h2>Welcome to your Inbox folder!</h2>
         {% else %}
             <h2>Welcome to your Sent Messages folder!</h2>
@@ -125,7 +125,7 @@
 
     <br>
 
-    {% if role == "/outbox" %}
+    {% if role == "outbox" %}
         <h2>Messages Already Delivered:</h2>
     {% else %}
         <h2>Your messages:</h2>
@@ -137,7 +137,7 @@
         <th>Text</th>
         <th>Controls</th>
 
-        {% if role == "/outbox" %}
+        {% if role == "outbox" %}
             <!-- the newest first -->
             {% for message in messages|reverse %}
             <tr>
@@ -173,7 +173,7 @@
         <br>
     </table>
 
-    {% if role == "/outbox" %}
+    {% if role == "outbox" %}
         <br>
         <h2>Messages Pending Delivery:</h2>
         <br>
