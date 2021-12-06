@@ -7,7 +7,7 @@ from mib.auth.login_manager import admin_required
 from mib.rao.user_manager import UserManager
 from mib.forms import ReportForm
 from datetime import datetime
-from mib.blacklist import add2blacklist_local
+from mib.rao.message_manager import MessageManager as mm
 from mib.views.doc import auto
 
 report = Blueprint('report', __name__)
@@ -63,7 +63,7 @@ def report_user():
 
             # blacklist reported user
             if block_user == 'yes':
-                add2blacklist_local(current_user, reported_user)
+                mm.add_blacklist(current_user, reported_user)
 
             return redirect('/')
 

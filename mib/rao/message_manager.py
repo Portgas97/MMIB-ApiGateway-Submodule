@@ -182,7 +182,7 @@ class MessageManager:
         if response.status_code == 200:
             return response.json()
         else:
-            return 404
+            return abort(404)
 
     @classmethod
     def set_as_read(cls, id: int):

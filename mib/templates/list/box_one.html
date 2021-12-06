@@ -76,9 +76,9 @@
     </nav>
 
         <div class="container jumbotron">
-            <b>From:</b> {{ message['sender_email'] }}
+            <b>From:</b> {{ message['sender_mail'] }}
             <br>
-            <b>To:</b> {{ message['receiver_email'] }}
+            <b>To:</b> {{ message['receiver_mail'] }}
             <br>
             <b>Delivery Date:</b> {{ message['time'] }}
             <br><br>
@@ -96,7 +96,7 @@
                 </div>
             {% endif %}
             <br>
-            {% if role == '/inbox' %}
+            {% if role == 'inbox' %}
             <a href="forward/{{message['id']}}"
                class="btn btn-info"
                role="button">
