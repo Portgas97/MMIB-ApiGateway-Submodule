@@ -46,6 +46,7 @@ def send_messages(to_parse, current_user_mail, time, message, file, image):
     :return: not_correctly_sent: list of mail addresses which were not real
     users or were the sender themselves
     """
+    # TODO: rewrite this to use message_manager
     correctly_sent = []
     not_correctly_sent = []
     # find users in database
@@ -101,7 +102,7 @@ def send_messages(to_parse, current_user_mail, time, message, file, image):
     return correctly_sent, not_correctly_sent
 
 
-def save_draft(current_user_mail, recipients, msg, time):
+def save_draft(current_user_mail, recipients, msg, time, image, image_hash):
     """
     saves a message with status of draft to the database
 
@@ -110,6 +111,7 @@ def save_draft(current_user_mail, recipients, msg, time):
     :param recipients: string containing the unparsed list of recipients
     :param msg: the actual message, max size of 1024 char
     """
+    # TODO: rewrite this to use message manager
     new_draft = Message()
     new_draft.add_message(msg, current_user_mail, recipients, time, None, 0)
     db.session.add(new_draft)
@@ -127,6 +129,8 @@ def save_picture(file, current_user_mail):
     :param current_user_mail: the mail of the current user
     :return: path_to_save: the path from which the image can be displayed
     """
+    # TODO: completely rewrite this to serialize pictures as base 64
+    #   and validate max length of 10240 bytes
     if file.filename != '' and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         # files are saved in a unique folder per each user

@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 
-from mib.database import db, Message
 from mib.views.doc import auto
+from mib.rao.message_manager import MessageManager as mm
 
 
 calendar = Blueprint('calendar', __name__)
@@ -14,11 +14,12 @@ def get_sent_messages(user):
     :return: query of all messages sent from this user and already received
     :rtype: SQLAlchemy.session.query
     """
-    sent_messages = db.session.query(Message).filter_by(
-        sender_email=user,
-        status=2,
-        visible_to_sender=True
-        )
+    role = 'outbox'
+    messages = mm.get_box(user, role)
+    sent_messages = []
+    for message in messages:
+        if message['status'] == 2:
+            sent_messages.append(message)
     return sent_messages
 
 
@@ -28,11 +29,12 @@ def get_received_messages(user):
     :return: query of all messages received from this user
     :rtype: SQLAlchemy.session.query
     """
-    received_messages = db.session.query(Message).filter_by(
-        receiver_email=user,
-        status=2,
-        visible_to_receiver=True
-        )
+    role = 'inbox'
+    messages = mm.get_box(user, role)
+    received_messages = []
+    for message in messages:
+        if message['status'] == 2:
+            received_messages.append(message)
     return received_messages
 
 

@@ -8,6 +8,7 @@ from mib.database import Message
 from mib.forms import SendForm
 from mib.send import send_messages, save_draft
 from mib.views.doc import auto
+from mib.rao.message_manager import MessageManager as mm
 
 send = Blueprint('send', __name__)
 
@@ -33,19 +34,21 @@ def _send(_id, data=""):
     # the method check is required to avoid resetting the data on a POST
     if _id is not None and request.method == 'GET':
         # load it after checking its existence, and its status as a draft
-        # drafts don't save images to save on server data usage
-        try:
-            draft = Message().query.filter_by(
-                id=int(_id),
-                sender_email=current_user.email,
-                status=0
-            ).one()
-        except NoResultFound:
+        draft = None
+        drafts = mm.get_box(current_user.get_email(), 'drafts')
+        for element in drafts:
+            if element['id'] == _id:
+                draft = element
+                break
+        if draft is None:
             abort(404)
-        form.message.data = draft.message
-        form.recipient.data = draft.receiver_email
+        form.message.data = draft['message']
+        form.recipient.data = draft['receiver_email']
         form.time.data = \
-            datetime.strptime(draft.time, '%Y-%m-%d %H:%M:%S')
+            datetime.strptime(draft['time'], '%Y-%m-%d %H:%M:%S')
+        form.image = draft['image']
+        tmp_filename = draft['image']
+        tmp_image = draft['image_hash']
     # instantiate arrays of mail addresses to display for our sender
     correctly_sent = []
     not_correctly_sent = []
@@ -57,6 +60,12 @@ def _send(_id, data=""):
             message, user_input = form.data['message'], form.data['recipient']
             time = form.data['time']
             to_parse = user_input.split(', ')
+            # check if the post request has the optional file part
+            if 'file' in request.files:
+                file = request.files['file']
+                # TODO: serialize file in base64
+                tmp_image = ''
+                tmp_filename = ''
             # we are saving a draft
             if request.form.get("save_button"):
                 # save draft
@@ -66,12 +75,12 @@ def _send(_id, data=""):
                     current_user_mail,
                     user_input,
                     message,
-                    time
+                    time,
+                    tmp_filename,
+                    tmp_image
                 )
                 return redirect('/')
-            # check if the post request has the optional file part
-            if 'file' in request.files:
-                file = request.files['file']
+
             # go ahead and deliver the messages
             try:
                 correctly_sent, not_correctly_sent = send_messages(
@@ -79,7 +88,8 @@ def _send(_id, data=""):
                     current_user_mail,
                     time,
                     message,
-                    file,
+                    tmp_filename,
+                    tmp_image,
                     None
                 )
             except (FileExistsError, NameError) as e:
@@ -110,7 +120,6 @@ def get_message():
 
     :returns: a rendered view
     """
-    drafts = Message().query.filter_by(sender_email=current_user.email,
-                                       status=0).all()
+    drafts = mm.get_box(current_user.get_email(), 'drafts')
     # noinspection PyUnresolvedReferences
     return render_template('list/draft_list.html', drafts=drafts, use='send')
