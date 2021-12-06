@@ -27,7 +27,7 @@ class MessageManager:
         except Exception:
             return abort(500)
         if response.status_code != 200:
-            return abort(404)
+            return []
         else:
             return response.json()
 
@@ -35,13 +35,11 @@ class MessageManager:
     def check_blacklist(cls, owner, email):
         try:
             url = "%s/blacklist" % cls.MESSAGES_ENDPOINT
-            query_string = [('owner', owner),
-                            ('email', email)]
+            query_string = {'owner': owner, 'email': email}
             response = requests.head(
                 url,
                 timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                data=json.dumps(query_string),
-                headers=encoder.headers
+                params=query_string
             )
         except Exception:
             return abort(500)

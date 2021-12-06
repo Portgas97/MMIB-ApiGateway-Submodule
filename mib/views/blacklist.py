@@ -22,10 +22,9 @@ def get_blacklist():
     :return: display the user's blacklist using the blacklist template.
     """
     # get the current user
-    user = flask_login.current_user
+    user = flask_login.current_user.email
     # get the user's blacklist fom the database
-    _blacklist = mm.get_blacklist()
-    _blacklist = [e.email for e in _blacklist]
+    _blacklist = mm.get_blacklist(user)
     return render_template('blacklist.html', result=_blacklist)
 
 
@@ -45,7 +44,7 @@ def add2blacklist():
         # get the email to block
         email = form.data['email']
         # get the current user
-        user = flask_login.current_user
+        user = flask_login.current_user.email
         mm.add_blacklist(user, email)
         return redirect('/blacklist')
 
@@ -69,10 +68,10 @@ def delete_from_blacklist():
         email = form.data['email']
 
         # get the current user
-        user = flask_login.current_user
+        user = flask_login.current_user.email
 
         # remove the email from the blacklist
-        mm.remove_blacklist(user.get_email())
+        mm.remove_blacklist(user)
         return redirect('/blacklist')
 
     return render_template('request_form.html', form=form)
