@@ -186,7 +186,7 @@ class UserManager:
         """
         user = cls.get_by_mail(email)
         if user is None:
-            return False
+            return None
         hash = user['password']
         if not check_password_hash(hash, password):
             return None
