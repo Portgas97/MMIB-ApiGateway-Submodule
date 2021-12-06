@@ -16,7 +16,7 @@ from mib import encoder
 
 
 class MessageManager:
-    MESSAGES_ENDPOINT = app.config['MESSAGE_MS_URL']
+    MESSAGES_ENDPOINT = app.config['MESSAGES_MS_URL']
     REQUESTS_TIMEOUT_SECONDS = app.config['REQUESTS_TIMEOUT_SECONDS']
 
     @classmethod
@@ -49,13 +49,11 @@ class MessageManager:
     def add_blacklist(cls, owner, email):
         try:
             url = "%s/blacklist" % cls.MESSAGES_ENDPOINT
-            query_string = [('owner', owner),
-                            ('email', email)]
+            query_string = {'owner': owner, 'email': email}
             response = requests.put(
                 url,
                 timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                data=json.dumps(query_string),
-                headers=encoder.headers
+                params=query_string
             )
         except Exception:
             return abort(500)
@@ -65,13 +63,11 @@ class MessageManager:
     def remove_blacklist(cls, owner, email):
         try:
             url = "%s/blacklist" % cls.MESSAGES_ENDPOINT
-            query_string = [('owner', owner),
-                            ('email', email)]
+            query_string = {'owner': owner, 'email': email}
             response = requests.delete(
                 url,
                 timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                data=json.dumps(query_string),
-                headers=encoder.headers
+                params=query_string
             )
         except Exception:
             return abort(500)

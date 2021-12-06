@@ -71,7 +71,7 @@ def delete_from_blacklist():
         user = flask_login.current_user.email
 
         # remove the email from the blacklist
-        mm.remove_blacklist(user)
+        mm.remove_blacklist(user, email)
         return redirect('/blacklist')
 
     return render_template('request_form.html', form=form)
