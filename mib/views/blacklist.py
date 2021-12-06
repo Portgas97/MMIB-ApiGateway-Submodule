@@ -6,6 +6,7 @@ from mib.blacklist import add2blacklist_local
 from mib.database import db, Blacklist
 from mib.forms import EmailForm
 from mib.views.doc import auto
+from mib.rao.message_manager import MessageManager as mm
 
 blacklist = Blueprint('blacklist', __name__)
 
@@ -23,9 +24,7 @@ def get_blacklist():
     # get the current user
     user = flask_login.current_user
     # get the user's blacklist fom the database
-    _blacklist = db.session.query(Blacklist).filter(
-        Blacklist.owner == user.get_id()
-    ).all()
+    _blacklist = mm.get_blacklist()
     _blacklist = [e.email for e in _blacklist]
     return render_template('blacklist.html', result=_blacklist)
 
@@ -47,7 +46,7 @@ def add2blacklist():
         email = form.data['email']
         # get the current user
         user = flask_login.current_user
-        add2blacklist_local(user, email)
+        mm.add_blacklist(user, email)
         return redirect('/blacklist')
 
     return render_template('request_form.html', form=form)
@@ -73,12 +72,7 @@ def delete_from_blacklist():
         user = flask_login.current_user
 
         # remove the email from the blacklist
-        _blacklist = db.session.query(Blacklist).filter(
-            Blacklist.owner == user.get_id(),
-            Blacklist.email == email
-        )
-        _blacklist.delete(synchronize_session=False)
-        db.session.commit()
+        mm.remove_blacklist(user.get_email())
         return redirect('/blacklist')
 
     return render_template('request_form.html', form=form)
