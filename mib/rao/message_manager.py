@@ -1,16 +1,10 @@
 from flask import json
-from werkzeug.security import check_password_hash
 from mib import app
 from flask import abort
 import requests
 
-from mib.auth.userauth import UserAuth
 from mib.models.draft import Draft
 from mib.models.message import Message
-from mib.models.new_user import NewUser
-from mib.models.user import User
-from mib.models.report import Report
-import sys
 
 from mib import encoder
 
@@ -75,7 +69,8 @@ class MessageManager:
 
     @classmethod
     def create_draft(cls, message, sender, receiver, time, image, image_hash):
-        draft = Draft(None, sender, receiver, message, time, image, image_hash)
+        draft = Message(None, sender, receiver,
+                        message, time, image, image_hash)
         try:
             url = "%s/draft" % cls.MESSAGES_ENDPOINT
             response = requests.post(url,
@@ -122,14 +117,12 @@ class MessageManager:
 
     @classmethod
     def delete_message(cls, owner: str, id: int):
-        query_string = [('email', owner),
-                        ('id', id)]
+        query_string = {'email': owner, 'id': id}
         try:
             url = "%s/draft" % cls.MESSAGES_ENDPOINT
             response = requests.post(url,
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                     data=json.dumps(query_string),
-                                     headers=encoder.headers)
+                                     params=query_string)
         except Exception:
             return abort(500)
         return response.status_code == 200
@@ -145,8 +138,8 @@ class MessageManager:
         return response.status_code == 200
 
     @classmethod
-    def edit_draft(cls, id, message, sender, receiver, time, image, imag_hash):
-        draft = Draft(id, sender, receiver, message, time, image, imag_hash)
+    def edit_draft(cls, id, message, sender, receiver, time, image, img_hash):
+        draft = Draft(id, sender, receiver, message, time, image, img_hash)
         try:
             url = "%s/draft" % cls.MESSAGES_ENDPOINT
             response = requests.put(

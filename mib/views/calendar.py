@@ -47,7 +47,7 @@ def get_calendar():
 
     :return: a rendered view
     """
-    user_email = current_user.get_email()
+    user_email = current_user.email
     user_sent_messages = get_sent_messages(user_email)
     user_received_messages = get_received_messages(user_email)
 
@@ -65,7 +65,7 @@ def get_calendar_sent():
 
     :return: a rendered view
     """
-    user_email = current_user.get_email()
+    user_email = current_user.email
     user_sent_messages = get_sent_messages(user_email)
 
     return render_template('calendar.html', sent_messages=user_sent_messages)
@@ -80,7 +80,7 @@ def get_calendar_received():
 
     :return: a rendered view
     """
-    user_email = current_user.get_email()
+    user_email = current_user.email
     user_received_messages = get_received_messages(user_email)
 
     return render_template('calendar.html',

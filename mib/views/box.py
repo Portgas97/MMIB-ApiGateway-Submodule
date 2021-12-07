@@ -1,10 +1,8 @@
 from flask import Blueprint, abort, redirect, request
 from flask.templating import render_template
 from flask_login import login_required, current_user
-from sqlalchemy.exc import NoResultFound
 
 from mib import send
-from mib.database import Message, db
 from mib.forms import ForwardForm, ReplyForm
 from mib.send import send_messages, save_draft
 from mib.views.doc import auto
@@ -29,7 +27,7 @@ def prep_inbox(_id):
     :param _id: optional message id
     :return: a rendered view
     """
-    user_mail = current_user.get_email()
+    user_mail = current_user.email
     role = 'inbox'
     messages = mm.get_box(user_mail, role)
     return display_box(messages, role, _id)
@@ -51,7 +49,7 @@ def prep_outbox(_id):
     :param _id: optional message id
     :return: a list of sent messages, divided in delivered and pending
     """
-    user_mail = current_user.get_email()
+    user_mail = current_user.email
     role = 'outbox'
     messages = mm.get_box(user_mail, role)
     return display_box(messages, role, _id)
@@ -78,7 +76,7 @@ def display_box(messages, role, optional_id):
                     if message['status'] == 0:
                         mm.delete_draft(optional_id)
                         return redirect("/send_draft_list")
-                    mm.delete_message(current_user.get_email(), optional_id)
+                    mm.delete_message(current_user.email, optional_id)
                     return redirect(role)
                 if role == 'inbox':
                     notify_sender(optional_id, message)
@@ -139,7 +137,7 @@ def forward(m_id):
     """
     if m_id is not None:
         # get the message from the microservice
-        messages = mm.get_box(current_user.get_email(), 'inbox')
+        messages = mm.get_box(current_user.email, 'inbox')
         for message in messages:
             if message['id'] == m_id:
                 form = ForwardForm()
@@ -156,14 +154,8 @@ def forward(m_id):
                     else:
                         image = None
                     correctly_sent, not_correctly_sent = send.send_messages(
-                        address.split(', '),
-                        current_user.get_email(),
-                        time,
-                        frw_message,
-                        None,
-                        image,
-                        image_hash
-                    )
+                        address.split(', '), current_user.email, time,
+                        frw_message, None, image)
                     return render_template(
                         'done_sending.html',
                         users1=correctly_sent,
@@ -208,7 +200,7 @@ def reply(m_id):
     """
     if m_id is None:
         return redirect('/inbox')
-    messages = mm.get_box(current_user.get_email(), 'inbox')
+    messages = mm.get_box(current_user.email, 'inbox')
     for message in messages:
         if message['id'] == m_id:
             # get the receiver mail from the original message
@@ -216,6 +208,8 @@ def reply(m_id):
             # ask the user to insert the reply text and delivery date
             form = ReplyForm()
             # send the reply
+            filename = message['image']
+            encoded_image = message['image_hash']
             if request.method == 'POST':
                 if form.validate_on_submit():
                     message = form.data['message']
@@ -224,17 +218,11 @@ def reply(m_id):
                     current_user_mail = getattr(current_user, 'email')
                     if request.form.get("save_button"):
                         # the user asked to save this message
-                        save_draft(current_user_mail, receiver, message, time)
+                        save_draft(None, current_user_mail, receiver, message,
+                                   time, filename, encoded_image)
                         return redirect('/')
                     correctly_sent, not_correctly_sent = send_messages(
-                        to_parse,
-                        current_user_mail,
-                        time,
-                        message,
-                        None,
-                        None,
-                        None
-                    )
+                        to_parse, current_user_mail, time, message, None, None)
                 else:
                     return render_template('error_template.html', form=form)
                 return render_template(

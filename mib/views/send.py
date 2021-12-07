@@ -1,16 +1,55 @@
+import base64
 from datetime import datetime
 
 from flask import Blueprint, render_template, request, redirect, abort
 from flask_login import login_required, current_user
-from sqlalchemy.exc import NoResultFound
+from werkzeug.utils import secure_filename
 
-from mib.database import Message
 from mib.forms import SendForm
 from mib.send import send_messages, save_draft
 from mib.views.doc import auto
 from mib.rao.message_manager import MessageManager as mm
 
 send = Blueprint('send', __name__)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
+def allowed_file(filename):
+    """
+    Checks the Allowed_Extensions constant to make sure we are sending an image
+
+    :param filename: the file's name, extension included
+    """
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def save_file(file, form):
+    """
+    Encodes a file in base64
+
+    :param file: the file to encode
+    :param form: the view form
+    :return: either filename and encoded file, or an error view
+    """
+    if file.filename != '' and allowed_file(file.filename):
+        with open(file, "rb") as image_file:
+            tmp_image = base64.b64encode(image_file.read())
+            tmp_filename = secure_filename(file.filename)
+            if len(tmp_image) > 102400000:
+                form.file.errors.append("File too big, max of 10 MB")
+                return render_template(
+                    'error_template.html',
+                    form=form
+                )
+            else:
+                return tmp_image, tmp_filename
+    else:
+        form.file.errors.append("Corrupted file")
+        return render_template(
+            'error_template.html',
+            form=form
+        )
 
 
 # noinspection PyUnusedLocal,PyUnboundLocalVariable
@@ -35,7 +74,7 @@ def _send(_id, data=""):
     if _id is not None and request.method == 'GET':
         # load it after checking its existence, and its status as a draft
         draft = None
-        drafts = mm.get_box(current_user.get_email(), 'drafts')
+        drafts = mm.get_box(current_user.email, 'drafts')
         for element in drafts:
             if element['id'] == _id:
                 draft = element
@@ -54,48 +93,42 @@ def _send(_id, data=""):
     not_correctly_sent = []
     if request.method == 'POST':
         if form.validate_on_submit():
-            current_user_mail = getattr(current_user, 'email')
+            current_user_mail = current_user.email
             file = None
             # grab must-have data which we are guaranteed to have
             message, user_input = form.data['message'], form.data['recipient']
             time = form.data['time']
             to_parse = user_input.split(', ')
             # check if the post request has the optional file part
+            tmp_image = ''
+            tmp_filename = ''
             if 'file' in request.files:
                 file = request.files['file']
-                # TODO: serialize file in base64
-                tmp_image = ''
-                tmp_filename = ''
+                tmp_image, tmp_filename = save_file(file, form)
             # we are saving a draft
             if request.form.get("save_button"):
                 # save draft
                 # unlike normal messages, drafts have multiple receivers
                 # because they haven't been split yet
-                draft = save_draft(
-                    current_user_mail,
-                    user_input,
-                    message,
-                    time,
-                    tmp_filename,
-                    tmp_image
-                )
-                return redirect('/')
-
-            # go ahead and deliver the messages
-            try:
+                if save_draft(_id, current_user_mail, user_input,
+                              message, time, tmp_filename, tmp_image):
+                    return redirect('/')
+                else:
+                    form.message.errors.append("Couldn't save the draft!")
+                    return render_template(
+                        'error_template.html',
+                        form=form
+                    )
+            # we are sending a real message
+            else:
                 correctly_sent, not_correctly_sent = send_messages(
                     to_parse,
                     current_user_mail,
                     time,
                     message,
                     tmp_filename,
-                    tmp_image,
-                    None
+                    tmp_image
                 )
-            except (FileExistsError, NameError) as e:
-                form.file.errors.append(str(e))
-                # noinspection PyUnresolvedReferences
-                return render_template('error_template.html', form=form)
         else:
             # noinspection PyUnresolvedReferences
             return render_template('error_template.html', form=form)
@@ -120,6 +153,6 @@ def get_message():
 
     :returns: a rendered view
     """
-    drafts = mm.get_box(current_user.get_email(), 'drafts')
+    drafts = mm.get_box(current_user.email, 'drafts')
     # noinspection PyUnresolvedReferences
     return render_template('list/draft_list.html', drafts=drafts, use='send')
