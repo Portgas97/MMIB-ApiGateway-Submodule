@@ -2,6 +2,7 @@ import pytz
 
 from mib.rao.message_manager import MessageManager as mm
 from mib.rao.user_manager import UserManager as um
+from mib.rao.notifications_manager import NotificationsManager as nm
 
 
 def send_messages(to_parse, current_user_mail, time, message, filename,
@@ -22,20 +23,43 @@ def send_messages(to_parse, current_user_mail, time, message, filename,
     users or were the sender themselves
     """
     correctly_sent = []
+    requested_addresses = []
     not_correctly_sent = []
-    time_aware = pytz.timezone('Europe/Rome').localize(time)
+    valid = ""
+    time = time.strftime('%Y-%m-%d %H:%M:%S')
     for address in to_parse:
         address = address.strip()
         if um.exist_by_mail(address) and not address == current_user_mail:
-            if mm.create_message(message, current_user_mail, address,
-                                 time_aware, filename, image_base64):
-                correctly_sent.append(address)
-            else:
-                not_correctly_sent.append(address)
+            # add address to list of valid addresses string and array
+            valid = valid + address + ", "
+            requested_addresses.append(address)
         else:
             if address == current_user_mail:
                 address = address + " (You)"
             not_correctly_sent.append(address)
+    if len(valid) > 2:
+        valid = valid[:-2]
+        # call the multi-user send method
+        array_of_replies = mm.create_message(message, current_user_mail, valid,
+                                             time, filename, image_base64)
+        for i in range(len(array_of_replies)):
+            # we use an index rather than an iterator to advance both arrays
+            # one of them is the reply array from the microservice
+            # the other is the list of all addresses which were queried
+            reply = array_of_replies[i]
+            current_address = requested_addresses[i]
+            if reply != -1:
+                correctly_sent.append(current_address)
+            if reply != -2:
+                # if the user wasn't blacklisted, we create a notification
+                title = current_user_mail + " Sent You a Message"
+                description = "Check your <a href=\"/inbox\">Inbox</a>" \
+                              " to <a href=\"/inbox/" + \
+                              str(reply) + "\">Open It</a>"
+                nm.create_notification(current_address, title,
+                                       description, time, reply)
+            else:
+                not_correctly_sent.append(current_address)
     return correctly_sent, not_correctly_sent
 
 

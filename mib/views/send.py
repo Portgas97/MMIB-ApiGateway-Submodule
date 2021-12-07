@@ -24,34 +24,6 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def save_file(file, form):
-    """
-    Encodes a file in base64
-
-    :param file: the file to encode
-    :param form: the view form
-    :return: either filename and encoded file, or an error view
-    """
-    if file.filename != '' and allowed_file(file.filename):
-        with open(file, "rb") as image_file:
-            tmp_image = base64.b64encode(image_file.read())
-            tmp_filename = secure_filename(file.filename)
-            if len(tmp_image) > 102400000:
-                form.file.errors.append("File too big, max of 10 MB")
-                return render_template(
-                    'error_template.html',
-                    form=form
-                )
-            else:
-                return tmp_image, tmp_filename
-    else:
-        form.file.errors.append("Corrupted file")
-        return render_template(
-            'error_template.html',
-            form=form
-        )
-
-
 # noinspection PyUnusedLocal,PyUnboundLocalVariable
 @send.route('/send', methods=['POST', 'GET'], defaults={'_id': None})
 @send.route('/send/<_id>', methods=['POST', 'GET'])
@@ -104,7 +76,17 @@ def _send(_id, data=""):
             tmp_filename = ''
             if 'file' in request.files:
                 file = request.files['file']
-                tmp_image, tmp_filename = save_file(file, form)
+                if file.filename != '' and allowed_file(file.filename):
+                    with open(file, "rb") as image_file:
+                        tmp_image = base64.b64encode(image_file.read())
+                        tmp_filename = secure_filename(file.filename)
+                        if len(tmp_image) > 102400000:
+                            form.file.errors.append(
+                                "File too big, max of 10 MB")
+                            return render_template(
+                                'error_template.html',
+                                form=form
+                            )
             # we are saving a draft
             if request.form.get("save_button"):
                 # save draft

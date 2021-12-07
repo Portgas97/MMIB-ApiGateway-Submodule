@@ -111,9 +111,9 @@ class MessageManager:
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
                                      data=json.dumps(message),
                                      headers=encoder.headers)
+            return response.json()
         except Exception:
-            return abort(500)
-        return response.status_code == 200
+            abort(500)
 
     @classmethod
     def delete_message(cls, owner: str, id: int):
