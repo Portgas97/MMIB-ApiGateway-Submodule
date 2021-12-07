@@ -147,6 +147,21 @@ class UserManager:
         return response.json()
 
     @classmethod
+    def search(cls, caller, word=None):
+        if word is None:
+            params = [('caller', caller)]
+        else:
+            params = [('caller', caller), ('word', word)]
+        try:
+            url = "%s/search" % cls.USERS_ENDPOINT
+            response = requests.get(url,
+                                    timeout=cls.REQUESTS_TIMEOUT_SECONDS,
+                                    params=params)
+        except Exception:
+            return abort(500)
+        return response.json()
+
+    @classmethod
     def report_user(cls, author, reported, description, timestamp):
         report = Report(None, author, reported, description, timestamp)
         try:

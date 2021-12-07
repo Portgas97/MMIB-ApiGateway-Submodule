@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, \
     url_for, jsonify
+from flask_login import current_user
 from flask_login import login_required
 from werkzeug.exceptions import BadRequestKeyError
 
-from flask_login import current_user
 from mib.forms import RecipientsListForm
 from mib.rao.user_manager import UserManager
 from mib.views.doc import auto
@@ -53,28 +53,23 @@ def ajax_livesearch():
     caller's address
     :rtype: json string
     """
-    user_list = UserManager.get_users_list()
-    # to filter the current_user from the list
-    user_list = filter(lambda user: user["id"] != current_user.id, user_list)
     try:
         search_word = request.form['query']
     except BadRequestKeyError:
-        recipients_found = user_list
+        recipients_found = UserManager.search(current_user.id)
     else:
         if request.form['query'] == 'void_request':
-            recipients_found = user_list
+            recipients_found = UserManager.search(current_user.id)
         else:
-            def filter_users(user):
-                return search_word in user["email"] or search_word in user[
-                    "firstname"] or search_word in user["lastname"]
-            recipients_found = filter(filter_users, user_list)
+            recipients_found = UserManager.search(current_user.id, search_word)
 
     # instantiate the form
     form = RecipientsListForm()
 
     # sets choices
     form.multiple_field_form.choices = \
-        [(user['email'], user['lastname'] + ' ' + user['firstname'] + ': ' + user['email'])
+        [(user['email'],
+          user['lastname'] + ' ' + user['firstname'] + ': ' + user['email'])
          for user in recipients_found]
 
     return jsonify(
