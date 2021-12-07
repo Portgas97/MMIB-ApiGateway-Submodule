@@ -53,9 +53,8 @@ def send_messages(to_parse, current_user_mail, time, message, filename,
             if reply != -2:
                 # if the user wasn't blacklisted, we create a notification
                 title = current_user_mail + " Sent You a Message"
-                description = "Check your <a href=\"/inbox\">Inbox</a>" \
-                              " to <a href=\"/inbox/" + \
-                              str(reply) + "\">Open It</a>"
+                description = "Check your <a href=\"/inbox\">Inbox</a> to " \
+                              "open it."
                 nm.create_notification(current_address, title,
                                        description, time, reply)
             else:

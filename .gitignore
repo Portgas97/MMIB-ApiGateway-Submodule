@@ -162,7 +162,7 @@ Temporary Items
 .apdisk
 
 # PyCharm
-.idea/
+.idea
 
 # Pytest
 .pytest_cache
