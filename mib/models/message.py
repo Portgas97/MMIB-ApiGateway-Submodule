@@ -248,7 +248,7 @@ class Message(Model):
         return self._status
 
     @status.setter
-    def image_hash(self, status: int):
+    def status(self, status: int):
         """Sets the image_hash of this Message.
 
 
@@ -268,8 +268,8 @@ class Message(Model):
         """
         return self._is_read
 
-    @image_hash.setter
-    def image_hash(self, is_read: bool):
+    @is_read.setter
+    def is_read(self, is_read: bool):
         """Sets the image_hash of this Message.
 
 

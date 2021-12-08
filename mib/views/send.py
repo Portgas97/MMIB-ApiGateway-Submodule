@@ -9,6 +9,7 @@ from mib.forms import SendForm
 from mib.send import send_messages, save_draft
 from mib.views.doc import auto
 from mib.rao.message_manager import MessageManager as mm
+from mib.views.utils import eprint
 
 send = Blueprint('send', __name__)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -77,16 +78,15 @@ def _send(_id, data=""):
             if 'file' in request.files:
                 file = request.files['file']
                 if file.filename != '' and allowed_file(file.filename):
-                    with open(file, "rb") as image_file:
-                        tmp_image = base64.b64encode(image_file.read())
-                        tmp_filename = secure_filename(file.filename)
-                        if len(tmp_image) > 102400000:
-                            form.file.errors.append(
-                                "File too big, max of 10 MB")
-                            return render_template(
-                                'error_template.html',
-                                form=form
-                            )
+                    tmp_image = base64.b64encode(file.read())
+                    tmp_filename = secure_filename(file.filename)
+                    if len(tmp_image) > 2000000:
+                        form.file.errors.append(
+                            "File too big, max of 2 MB")
+                        return render_template(
+                            'error_template.html',
+                            form=form
+                        )
             # we are saving a draft
             if request.form.get("save_button"):
                 # save draft

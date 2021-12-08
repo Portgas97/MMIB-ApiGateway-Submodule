@@ -91,7 +91,7 @@
                 <br>
                 <div>
                     <img style="max-width: 500px; max-height: 500px;"
-                         src="{{ url_for('static', filename=message['image']|safe) }}"
+                         src="data:{{message['image']}};base64, {{message['image_hash']}}"
                     />
                 </div>
             {% endif %}

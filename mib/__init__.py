@@ -7,7 +7,8 @@ import os
 import sys
 
 from flask import Flask
-# from flask_uploads import configure_uploads
+from flask_uploads import configure_uploads
+from mib.forms import images
 from flask_bootstrap import Bootstrap
 from flask_environments import Environments
 
@@ -44,6 +45,8 @@ def create_app():
     # circolar import error (I think)
     app.config['WTF_CSRF_SECRET_KEY'] = 'A SECRET KEY'
     app.config['SECRET_KEY'] = 'SUPER_SECRET'
+    app.config['MAX_CONTENT_LENGTH'] = 2000000
+    app.config['UPLOADED_IMAGES_DEST'] = './mib/static/'
     # _app.config['UPLOADED_IMAGES_DEST'] = UPLOAD_FOLDER
     # _app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 
@@ -78,6 +81,8 @@ def create_app():
     register_extensions(app)
     register_blueprints(app)
     register_handlers(app)
+
+    configure_uploads(app, images)
 
     from mib.database import db
     db.init_app(app)

@@ -7,6 +7,7 @@ from mib.models.draft import Draft
 from mib.models.message import Message
 
 from mib import encoder
+from mib.views.utils import eprint
 
 
 class MessageManager:
@@ -103,7 +104,7 @@ class MessageManager:
             message,
             time,
             image,
-            image_hash
+            image_hash.decode('utf-8')
         )
         try:
             url = "%s/message" % cls.MESSAGES_ENDPOINT
