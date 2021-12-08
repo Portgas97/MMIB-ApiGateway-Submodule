@@ -192,8 +192,7 @@ def forward(m_id):
                         text=frw_message
                     )
                 return render_template('request_form.html', form=form)
-            else:
-                abort(404)
+        abort(404)
 
 
 @box.route("/outbox/withdraw/<m_id>", methods=["GET"])

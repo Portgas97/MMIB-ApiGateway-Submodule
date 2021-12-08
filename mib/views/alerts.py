@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template
-from mib.database import Notification, db
 import flask_login
 from flask_login.utils import login_required
 from mib.views.doc import auto
@@ -9,7 +8,6 @@ from mib.rao.notifications_manager import NotificationsManager
 alerts = Blueprint('alerts', __name__)
 
 
-# noinspection PyUnresolvedReferences
 @alerts.route('/notifications', methods=['GET'])
 @auto.doc(groups=['routes'])
 @login_required

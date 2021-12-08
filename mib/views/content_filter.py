@@ -48,7 +48,7 @@ def _content_filter_list():
 
     :return: a rendered view
     """
-    file = open(r"./mib/static/default_badwords.txt", "r")
+    file = open(r"../../static/default_badwords.txt", "r")
     wordlist = []
     for line in file:
         wordlist.append(line)

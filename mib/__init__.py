@@ -1,8 +1,3 @@
-# import re
-# from jinja2 import evalcontextfilter
-# from markupsafe import Markup, escape
-# import datetime
-# import sys
 import os
 import sys
 
@@ -11,17 +6,9 @@ from flask_uploads import configure_uploads
 from mib.forms import images
 from flask_bootstrap import Bootstrap
 from flask_environments import Environments
-
 from mib import encoder
 
-"""
-from mib.background import LOTTERY_PRICE
-from mib.auth import login_manager as lm
-from mib.database import User, db
-from mib.views import blueprints
-from mib.forms import images
-from mib.send import UPLOAD_FOLDER, MAX_CONTENT_LENGTH
-"""
+
 
 __version__ = '0.1'
 
@@ -41,26 +28,15 @@ def create_app():
 
     flask_env = os.getenv('FLASK_ENV', 'None')
 
-    # from mib.send import UPLOAD_FOLDER, MAX_CONTENT_LENGTH --> produce
-    # circolar import error (I think)
     app.config['WTF_CSRF_SECRET_KEY'] = 'A SECRET KEY'
     app.config['SECRET_KEY'] = 'SUPER_SECRET'
     app.config['MAX_CONTENT_LENGTH'] = 2000000
     app.config['UPLOADED_IMAGES_DEST'] = './mib/static/'
-    # _app.config['UPLOADED_IMAGES_DEST'] = UPLOAD_FOLDER
-    # _app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 
-    # now these are set in config.py
-    # disable CSRF protection when the app is running in dev or test mode
     if app.config['ENV'] == 'development' or "pytest" in sys.modules:
         app.config['WTF_CSRF_ENABLED'] = False
     if "pytest" in sys.modules:
         app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../T_mmiab.db'
-    else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../mmiab.db'
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../mmiab.db'
 
     if flask_env == 'development':
         config_object = 'config.DevConfig'
@@ -88,20 +64,10 @@ def create_app():
     db.init_app(app)
     import mib.auth.login_manager as lm
     login = lm.init_login_manager(app)
-    db.create_all(app=app)
+
 
     if flask_env == 'testing' or flask_env == 'development':
         register_test_blueprints(app)
-
-    # I don't think this is needed anymore
-    # configure_uploads(_app, images)
-    # for bp in blueprints:
-    #    _app.register_blueprint(bp)
-    #    bp.app = _app
-
-
-
-
 
     app.json_encoder = encoder.JSONEncoder
     return app
@@ -159,17 +125,3 @@ def register_handlers(app):
 
     app.register_error_handler(404, page_404)
     app.register_error_handler(500, error_500)
-
-
-"""
-_paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
-
-@app.template_filter()
-@evalcontextfilter
-def nl2br(eval_ctx, value):
-    result = u'\n\n'.join(u'<p>%s</p>' % p.replace('\n', Markup('<br>\n'))
-                          for p in _paragraph_re.split(escape(value)))
-    if eval_ctx.autoescape:
-        result = Markup(result)
-    return result
-"""

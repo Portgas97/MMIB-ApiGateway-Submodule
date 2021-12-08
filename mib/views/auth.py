@@ -1,16 +1,13 @@
 from flask import Blueprint, redirect, render_template, abort
 from flask_login import login_user, logout_user
 
-from mib.database import User as DBUser
 from mib.forms import LoginForm
-from mib.models.user import User
 from mib.rao.user_manager import UserManager
 from mib.views.doc import auto
 
 auth = Blueprint('auth', __name__)
 
 
-# noinspection PyUnresolvedReferences
 @auth.route('/login', methods=['GET', 'POST'])
 @auto.doc(groups=['routes'])
 def login():
@@ -42,14 +39,3 @@ def logout():
     logout_user()
     return redirect('/')
 
-def _user2dbuser(data):
-    """
-    Convert a User object to a DBUser object
-    """
-    user = DBUser()
-    user.email = data.email
-    user.firstname = data.firstname
-    user.lastname = data.lastname
-    user.set_password(data.password)
-    user.date_of_birth = data.date_of_birth
-    return user

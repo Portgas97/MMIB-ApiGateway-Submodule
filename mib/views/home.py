@@ -6,7 +6,7 @@ from mib.views.doc import auto
 home = Blueprint('home', __name__)
 
 
-# noinspection PyUnresolvedReferences
+
 @home.route('/')
 @auto.doc(groups=['routes'])
 def index():

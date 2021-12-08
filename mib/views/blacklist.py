@@ -2,9 +2,8 @@ import flask_login
 from flask import Blueprint, redirect, render_template
 from flask_login import login_required
 
-from mib.blacklist import add2blacklist_local
-from mib.database import db, Blacklist
 from mib.forms import EmailForm
+from mib.rao.user_manager import UserManager
 from mib.views.doc import auto
 from mib.rao.message_manager import MessageManager as mm
 
@@ -45,7 +44,8 @@ def add2blacklist():
         email = form.data['email']
         # get the current user
         user = flask_login.current_user.email
-        mm.add_blacklist(user, email)
+        if user != email and UserManager.exist_by_mail(email):
+            mm.add_blacklist(user, email)
         return redirect('/blacklist')
 
     return render_template('request_form.html', form=form)

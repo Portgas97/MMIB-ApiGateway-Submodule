@@ -11,7 +11,6 @@ from mib.views.doc import auto
 list_blueprint = Blueprint('list', __name__)
 
 
-# noinspection PyUnresolvedReferences
 @list_blueprint.route('/list_of_recipients', methods=['POST', 'GET'])
 @auto.doc(groups=['routes'])
 @login_required
@@ -41,7 +40,6 @@ def _display_users():
         return render_template('list_of_recipients.html')
 
 
-# noinspection PyUnresolvedReferences
 @list_blueprint.route('/live_search', methods=['POST'])
 @auto.doc(groups=['routes'])
 @login_required
