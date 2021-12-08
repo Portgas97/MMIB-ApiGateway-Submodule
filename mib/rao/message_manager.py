@@ -7,6 +7,7 @@ from mib.models.draft import Draft
 from mib.models.message import Message
 
 from mib import encoder
+from mib.views.utils import eprint
 
 
 class MessageManager:
@@ -103,7 +104,7 @@ class MessageManager:
             message,
             time,
             image,
-            image_hash
+            image_hash.decode('utf-8')
         )
         try:
             url = "%s/message" % cls.MESSAGES_ENDPOINT
@@ -119,10 +120,10 @@ class MessageManager:
     def delete_message(cls, owner: str, id: int):
         query_string = {'email': owner, 'id': id}
         try:
-            url = "%s/draft" % cls.MESSAGES_ENDPOINT
-            response = requests.post(url,
-                                     timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                     params=query_string)
+            url = "%s/message" % cls.MESSAGES_ENDPOINT
+            response = requests.delete(url,
+                                       timeout=cls.REQUESTS_TIMEOUT_SECONDS,
+                                       params=query_string)
         except Exception:
             return abort(500)
         return response.status_code == 200

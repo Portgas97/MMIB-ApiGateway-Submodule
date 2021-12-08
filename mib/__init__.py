@@ -2,6 +2,8 @@ import os
 import sys
 
 from flask import Flask
+from flask_uploads import configure_uploads
+from mib.forms import images
 from flask_bootstrap import Bootstrap
 from flask_environments import Environments
 from mib import encoder
@@ -28,6 +30,8 @@ def create_app():
 
     app.config['WTF_CSRF_SECRET_KEY'] = 'A SECRET KEY'
     app.config['SECRET_KEY'] = 'SUPER_SECRET'
+    app.config['MAX_CONTENT_LENGTH'] = 2000000
+    app.config['UPLOADED_IMAGES_DEST'] = './mib/static/'
 
     if app.config['ENV'] == 'development' or "pytest" in sys.modules:
         app.config['WTF_CSRF_ENABLED'] = False
@@ -54,6 +58,10 @@ def create_app():
     register_blueprints(app)
     register_handlers(app)
 
+    configure_uploads(app, images)
+
+    from mib.database import db
+    db.init_app(app)
     import mib.auth.login_manager as lm
     login = lm.init_login_manager(app)
 

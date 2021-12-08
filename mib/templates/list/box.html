@@ -118,8 +118,10 @@
     <div>
         {% if role == "inbox" %}
             <h2>Welcome to your Inbox folder!</h2>
-        {% else %}
+        {% elif role == "outbox" %}
             <h2>Welcome to your Sent Messages folder!</h2>
+        {% else %}
+            <h2>Welcome to your Drafts folder!</h2>
         {% endif %}
     </div>
 
@@ -127,8 +129,10 @@
 
     {% if role == "outbox" %}
         <h2>Messages Already Delivered:</h2>
+    {% elif role == "inbox" %}
+        <h2>Your received messages:</h2>
     {% else %}
-        <h2>Your messages:</h2>
+        <h2>Your drafts:</h2>
     {% endif %}
 
     <table>
@@ -141,7 +145,7 @@
             <!-- the newest first -->
             {% for message in messages|reverse %}
             <tr>
-                <td>{{message.receiver_email}}</td>
+                <td>{{message.receiver_mail}}</td>
                 <td>{{message.time}}</td>
                 <td>{{message.message}}</td>
                 <td>
@@ -153,17 +157,32 @@
                 </td>
             </tr>
             {% endfor %}
-        {% else %}
+        {% elif role == "inbox" %}
             <!-- the newest first -->
             {% for message in messages|reverse %}
             <tr>
-                <td>{{message.sender_email}}</td>
+                <td>{{message.sender_mail}}</td>
                 <td>{{message.time}}</td>
                 <td>{{message.message}}</td>
                 <td>
                     <a href="inbox/{{message['id']}}">Open</a>
                     or
                     <a onclick=deleteRecord("inbox/{{message['id']}}") href="#">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            {% for message in messages|reverse %}
+            <tr>
+                <td>{{message.receiver_mail}}</td>
+                <td>{{message.time}}</td>
+                <td>{{message.message}}</td>
+                <td>
+                    <a href="send/{{message['id']}}">Open</a>
+                    or
+                    <a onclick=deleteRecord("drafts/{{message['id']}}") href="#">
                         Delete
                     </a>
                 </td>
@@ -185,7 +204,7 @@
 
             <tr>
                 {% for message in pending|reverse %}
-                <td>{{message.receiver_email}}</td>
+                <td>{{message.receiver_mail}}</td>
                 <td>{{message.time}}</td>
                 <td>{{message.message}}</td>
                 <td>

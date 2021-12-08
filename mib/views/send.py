@@ -9,6 +9,7 @@ from mib.forms import SendForm
 from mib.send import send_messages, save_draft
 from mib.views.doc import auto
 from mib.rao.message_manager import MessageManager as mm
+from mib.views.utils import eprint
 
 send = Blueprint('send', __name__)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -48,13 +49,13 @@ def _send(_id, data=""):
         draft = None
         drafts = mm.get_box(current_user.email, 'drafts')
         for element in drafts:
-            if element['id'] == _id:
+            if element['id'] == int(_id):
                 draft = element
                 break
         if draft is None:
             abort(404)
         form.message.data = draft['message']
-        form.recipient.data = draft['receiver_email']
+        form.recipient.data = draft['receiver_mail']
         form.time.data = \
             datetime.strptime(draft['time'], '%Y-%m-%d %H:%M:%S')
         form.image = draft['image']
@@ -77,16 +78,15 @@ def _send(_id, data=""):
             if 'file' in request.files:
                 file = request.files['file']
                 if file.filename != '' and allowed_file(file.filename):
-                    with open(file, "rb") as image_file:
-                        tmp_image = base64.b64encode(image_file.read())
-                        tmp_filename = secure_filename(file.filename)
-                        if len(tmp_image) > 102400000:
-                            form.file.errors.append(
-                                "File too big, max of 10 MB")
-                            return render_template(
-                                'error_template.html',
-                                form=form
-                            )
+                    tmp_image = base64.b64encode(file.read())
+                    tmp_filename = secure_filename(file.filename)
+                    if len(tmp_image) > 2000000:
+                        form.file.errors.append(
+                            "File too big, max of 2 MB")
+                        return render_template(
+                            'error_template.html',
+                            form=form
+                        )
             # we are saving a draft
             if request.form.get("save_button"):
                 # save draft
@@ -111,6 +111,14 @@ def _send(_id, data=""):
                     tmp_filename,
                     tmp_image
                 )
+                if correctly_sent[0] == -3:
+                    # the message ms told us time was invalid
+                    form.time.errors.append("You can't send a message "
+                                            "into the past!")
+                    return render_template(
+                        'error_template.html',
+                        form=form
+                    )
         else:
             # noinspection PyUnresolvedReferences
             return render_template('error_template.html', form=form)

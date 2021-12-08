@@ -48,6 +48,9 @@ def send_messages(to_parse, current_user_mail, time, message, filename,
             # the other is the list of all addresses which were queried
             reply = array_of_replies[i]
             current_address = requested_addresses[i]
+            if reply == -3:
+                # abort, bad time format
+                return [-3], [-3]
             if reply != -1:
                 correctly_sent.append(current_address)
             if reply != -2:
@@ -75,6 +78,7 @@ def save_draft(id, current_user_mail, recipients, msg, time, image,
     :param recipients: string containing the unparsed list of recipients
     :param msg: the actual message, max size of 1024 char
     """
+    time = time.strftime('%Y-%m-%d %H:%M:%S')
     if id is None:
         return mm.create_draft(
             msg,

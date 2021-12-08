@@ -1,4 +1,6 @@
 from flask import abort
+
+
 def page_404(e):
     return abort(404)
 
