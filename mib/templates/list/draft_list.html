@@ -119,7 +119,7 @@
         <!-- the newest first -->
         {% for draft in drafts|reverse %}
         <tr>
-            <td>{{draft.receiver_email}}</td>
+            <td>{{draft.receiver_mail}}</td>
             <td>{{draft.time}}</td>
             <td>{{draft.message}}</td>
             <td><a href="send/{{draft['id']}}">Edit</a> or

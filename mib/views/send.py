@@ -48,7 +48,7 @@ def _send(_id, data=""):
         draft = None
         drafts = mm.get_box(current_user.email, 'drafts')
         for element in drafts:
-            if element['id'] == _id:
+            if element['id'] == int(_id):
                 draft = element
                 break
         if draft is None:

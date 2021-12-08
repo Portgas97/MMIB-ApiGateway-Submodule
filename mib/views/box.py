@@ -91,10 +91,14 @@ def display_box(messages, role, optional_id):
         if role == 'outbox':
             pending_messages = []
             for message in messages:
+                print("Considering message id \"" + str(message['id']) + "\"; status: " + str(message['status']))
                 if message['status'] == 1:
                     pending_messages.append(message)
+                    print("Appended to pending")
                 elif message['status'] == 2:
                     sent_messages.append(message)
+                    print("Appended to sent")
+            messages = sent_messages
         return render_template(
             'list/box.html',
             messages=messages,

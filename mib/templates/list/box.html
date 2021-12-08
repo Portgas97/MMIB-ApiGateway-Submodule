@@ -141,7 +141,7 @@
             <!-- the newest first -->
             {% for message in messages|reverse %}
             <tr>
-                <td>{{message.receiver_email}}</td>
+                <td>{{message.receiver_mail}}</td>
                 <td>{{message.time}}</td>
                 <td>{{message.message}}</td>
                 <td>
@@ -157,7 +157,7 @@
             <!-- the newest first -->
             {% for message in messages|reverse %}
             <tr>
-                <td>{{message.sender_email}}</td>
+                <td>{{message.sender_mail}}</td>
                 <td>{{message.time}}</td>
                 <td>{{message.message}}</td>
                 <td>
@@ -185,7 +185,7 @@
 
             <tr>
                 {% for message in pending|reverse %}
-                <td>{{message.receiver_email}}</td>
+                <td>{{message.receiver_mail}}</td>
                 <td>{{message.time}}</td>
                 <td>{{message.message}}</td>
                 <td>
