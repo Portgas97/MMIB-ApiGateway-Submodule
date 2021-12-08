@@ -48,6 +48,9 @@ def send_messages(to_parse, current_user_mail, time, message, filename,
             # the other is the list of all addresses which were queried
             reply = array_of_replies[i]
             current_address = requested_addresses[i]
+            if reply == -3:
+                # abort, bad time format
+                return [-3], [-3]
             if reply != -1:
                 correctly_sent.append(current_address)
             if reply != -2:
