@@ -106,7 +106,7 @@ def display_box(messages, role, optional_id):
                     return redirect("/" + role)
                 if role == 'inbox':
                     if not message['is_read']:
-                        notify_sender(optional_id, message)
+                        notify_sender(int(optional_id), message)
                         mm.set_as_read(optional_id)
                 return render_template(
                     'list/box_one.html',
@@ -141,8 +141,6 @@ def notify_sender(id, message):
     :param id: the id of the viewed message
     :param message: message json object
     """
-    # TODO: add a call to ask the MS if a message has been read
-    #   then check that value to determine whether we execute this block
     title = message['receiver_mail'] + " Read Your Message"
     description = \
         "<i>" + "\"" + message['message'] + "\"" + "</i>"
