@@ -129,8 +129,8 @@
 
     {% if role == "outbox" %}
         <h2>Messages Already Delivered:</h2>
-    {% elif role == "outbox" %}
-        <h2>Your messages:</h2>
+    {% elif role == "inbox" %}
+        <h2>Your received messages:</h2>
     {% else %}
         <h2>Your drafts:</h2>
     {% endif %}

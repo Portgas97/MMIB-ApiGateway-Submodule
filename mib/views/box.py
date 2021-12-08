@@ -2,7 +2,6 @@ from flask import Blueprint, abort, redirect, request
 from flask.templating import render_template
 from flask_login import login_required, current_user
 
-from mib import send
 from mib.forms import ForwardForm, ReplyForm
 from mib.send import send_messages, save_draft
 from mib.views.doc import auto
@@ -168,23 +167,24 @@ def forward(m_id):
         # get the message from the microservice
         messages = mm.get_box(current_user.email, 'inbox')
         for message in messages:
-            if message['id'] == m_id:
+            if int(message['id']) == int(m_id):
                 form = ForwardForm()
                 if form.validate_on_submit():
                     address = form.data["recipient"]
                     time = form.data["time"]
                     # add a forward header to the message
-                    frw_message = "Forwarded by: " + message['receiver_email']
-                    frw_message += "\nFrom: " + message['sender_email']
+                    frw_message = "Forwarded by: " + message['receiver_mail']
+                    frw_message += "\nFrom: " + message['sender_mail']
                     frw_message += "\n\n" + message['message']
                     if message['image'] != "":
                         image = message['image']
                         image_hash = message['image_hash']
                     else:
                         image = None
-                    correctly_sent, not_correctly_sent = send.send_messages(
+                        image_hash = None
+                    correctly_sent, not_correctly_sent = send_messages(
                         address.split(', '), current_user.email, time,
-                        frw_message, None, image)
+                        frw_message, image, image_hash)
                     return render_template(
                         'done_sending.html',
                         users1=correctly_sent,
@@ -231,9 +231,9 @@ def reply(m_id):
         return redirect('/inbox')
     messages = mm.get_box(current_user.email, 'inbox')
     for message in messages:
-        if message['id'] == m_id:
+        if int(message['id']) == int(m_id):
             # get the receiver mail from the original message
-            receiver = message['sender_email']
+            receiver = message['sender_mail']
             # ask the user to insert the reply text and delivery date
             form = ReplyForm()
             # send the reply
