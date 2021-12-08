@@ -54,7 +54,7 @@ def _send(_id, data=""):
         if draft is None:
             abort(404)
         form.message.data = draft['message']
-        form.recipient.data = draft['receiver_email']
+        form.recipient.data = draft['receiver_mail']
         form.time.data = \
             datetime.strptime(draft['time'], '%Y-%m-%d %H:%M:%S')
         form.image = draft['image']

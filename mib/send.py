@@ -75,6 +75,7 @@ def save_draft(id, current_user_mail, recipients, msg, time, image,
     :param recipients: string containing the unparsed list of recipients
     :param msg: the actual message, max size of 1024 char
     """
+    time = time.strftime('%Y-%m-%d %H:%M:%S')
     if id is None:
         return mm.create_draft(
             msg,
