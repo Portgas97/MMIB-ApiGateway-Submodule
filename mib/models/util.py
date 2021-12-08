@@ -1,9 +1,7 @@
 import datetime
-
-import six
 import typing
 
-from flask import json
+import six
 
 
 def _deserialize(data, klass):

@@ -10,7 +10,7 @@ from mib.views.doc import auto
 unreg = Blueprint('unreg', __name__)
 
 
-# noinspection PyUnresolvedReferences
+
 @unreg.route('/unregister', methods=['GET', 'POST'])
 @auto.doc(groups=['routes'])
 @login_required

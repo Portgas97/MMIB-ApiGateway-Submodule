@@ -8,7 +8,6 @@ from mib.views.doc import auto
 credentials = Blueprint('credentials', __name__)
 
 
-# noinspection PyUnresolvedReferences
 @credentials.route('/credentials', methods=['POST', 'GET'])
 @auto.doc(groups=['routes'])
 @login_required

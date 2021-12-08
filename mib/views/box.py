@@ -13,7 +13,6 @@ from mib.rao.user_manager import UserManager as um
 box = Blueprint('box', __name__)
 
 
-# noinspection PyUnresolvedReferences
 @box.route("/inbox", methods=["GET"], defaults={'_id': None})
 @box.route("/inbox/<_id>", methods=["GET", "DELETE"])
 @auto.doc(groups=['routes'])

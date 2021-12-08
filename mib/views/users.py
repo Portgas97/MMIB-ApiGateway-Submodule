@@ -9,7 +9,7 @@ from mib.views.doc import auto
 users = Blueprint('users', __name__)
 
 
-# noinspection PyUnresolvedReferences
+
 @users.route('/users')
 @auto.doc(groups=['routes'])
 def _users():
@@ -22,7 +22,7 @@ def _users():
     return render_template("users.html", users=users_query)
 
 
-# noinspection PyUnresolvedReferences
+
 @users.route('/create_user', methods=['POST', 'GET'])
 @auto.doc(groups=['routes'])
 def create_user():

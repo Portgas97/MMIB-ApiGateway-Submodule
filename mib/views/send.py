@@ -24,7 +24,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# noinspection PyUnusedLocal,PyUnboundLocalVariable
+
 @send.route('/send', methods=['POST', 'GET'], defaults={'_id': None})
 @send.route('/send/<_id>', methods=['POST', 'GET'])
 @auto.doc(groups=['routes'])

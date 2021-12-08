@@ -2,8 +2,6 @@ import flask_login
 from flask import Blueprint, redirect, render_template
 from flask_login import login_required
 
-from mib.blacklist import add2blacklist_local
-from mib.database import db, Blacklist
 from mib.forms import EmailForm
 from mib.views.doc import auto
 from mib.rao.message_manager import MessageManager as mm

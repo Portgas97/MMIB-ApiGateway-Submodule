@@ -79,11 +79,9 @@ def create_app():
     register_blueprints(app)
     register_handlers(app)
 
-    from mib.database import db
-    db.init_app(app)
     import mib.auth.login_manager as lm
     login = lm.init_login_manager(app)
-    db.create_all(app=app)
+
 
     if flask_env == 'testing' or flask_env == 'development':
         register_test_blueprints(app)

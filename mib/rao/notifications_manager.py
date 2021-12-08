@@ -1,13 +1,10 @@
-from flask import json
-from requests.models import Response
-from werkzeug.security import check_password_hash
-from mib import app
-from flask import abort
 import requests
+from flask import abort
+from flask import json
 
-from mib.models.notification import Notification
-import sys
+from mib import app
 from mib import encoder
+from mib.models.notification import Notification
 
 
 class NotificationsManager:
