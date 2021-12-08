@@ -119,7 +119,7 @@ class MessageManager:
     def delete_message(cls, owner: str, id: int):
         query_string = {'email': owner, 'id': id}
         try:
-            url = "%s/draft" % cls.MESSAGES_ENDPOINT
+            url = "%s/message" % cls.MESSAGES_ENDPOINT
             response = requests.post(url,
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
                                      params=query_string)
