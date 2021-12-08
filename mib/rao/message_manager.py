@@ -120,9 +120,9 @@ class MessageManager:
         query_string = {'email': owner, 'id': id}
         try:
             url = "%s/message" % cls.MESSAGES_ENDPOINT
-            response = requests.post(url,
-                                     timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                     params=query_string)
+            response = requests.delete(url,
+                                       timeout=cls.REQUESTS_TIMEOUT_SECONDS,
+                                       params=query_string)
         except Exception:
             return abort(500)
         return response.status_code == 200
