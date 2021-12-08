@@ -63,7 +63,7 @@ def report_user():
 
             # blacklist reported user
             if block_user == 'yes':
-                mm.add_blacklist(current_user, reported_user)
+                mm.add_blacklist(current_user_email, reported_user)
 
             return redirect('/')
 
