@@ -4,8 +4,15 @@ from flask_login import login_required, current_user
 from mib.views.doc import auto
 from mib.rao.message_manager import MessageManager as mm
 
-
 calendar = Blueprint('calendar', __name__)
+
+
+class MessageCalendar:
+    def __init__(self, receiver, sender, time, id):
+        self.receiver_email = receiver
+        self.sender_email = sender
+        self.time = time,
+        self.id = id
 
 
 def get_sent_messages(user):
@@ -19,7 +26,13 @@ def get_sent_messages(user):
     sent_messages = []
     for message in messages:
         if message['status'] == 2:
-            sent_messages.append(message)
+            calendar_message = MessageCalendar(
+                message['receiver_mail'],
+                message['sender_mail'],
+                message['time'],
+                message['id']
+            )
+            sent_messages.append(calendar_message)
     return sent_messages
 
 
@@ -34,7 +47,13 @@ def get_received_messages(user):
     received_messages = []
     for message in messages:
         if message['status'] == 2:
-            received_messages.append(message)
+            calendar_message = MessageCalendar(
+                message['receiver_mail'],
+                message['sender_mail'],
+                message['time'],
+                message['id']
+            )
+            received_messages.append(calendar_message)
     return received_messages
 
 
