@@ -3,6 +3,7 @@ import pytz
 from mib.rao.message_manager import MessageManager as mm
 from mib.rao.user_manager import UserManager as um
 from mib.rao.notifications_manager import NotificationsManager as nm
+from mib.views.content_filter import check_content_filter
 
 
 def send_messages(to_parse, current_user_mail, time, message, filename,
@@ -29,7 +30,8 @@ def send_messages(to_parse, current_user_mail, time, message, filename,
     time = time.strftime('%Y-%m-%d %H:%M:%S')
     for address in to_parse:
         address = address.strip()
-        if um.exist_by_mail(address) and not address == current_user_mail:
+        if um.exist_by_mail(address) and not address == current_user_mail and \
+                check_content_filter(address, message):
             # add address to list of valid addresses string and array
             valid = valid + address + ", "
             requested_addresses.append(address)

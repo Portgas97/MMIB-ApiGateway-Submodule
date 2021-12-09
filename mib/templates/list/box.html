@@ -18,6 +18,14 @@
     src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
     </script>
     <script>
+    function getConfirmation(url) {
+       var retVal = confirm("Are you sure you want to spend points and withdraw this message?");
+       if( retVal == true ) {
+          deleteRecord(url);
+       } else {
+          return false;
+       }
+    }
     function deleteRecord(url) {
         var xhr = new XMLHttpRequest();
         xhr.open("DELETE", url);
@@ -212,7 +220,7 @@
                         Open
                     </a>
                     or
-                    <a onclick=deleteRecord("outbox/{{message['id']}}") href="#">
+                    <a onclick=getConfirmation("outbox/{{message['id']}}") href="#">
                         Delete
                     </a>
                 </td>
