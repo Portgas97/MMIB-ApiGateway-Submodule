@@ -59,9 +59,11 @@ class UserManager:
     def delete_user(cls, id):
         try:
             url = "%s/users/by_id/%s" % (cls.USERS_ENDPOINT, str(id))
-            requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+            response = requests.delete(url,
+                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
             return abort(500)
+        return response
 
     @classmethod
     def edit_user(cls, id, email=None, firstname=None,
@@ -179,18 +181,20 @@ class UserManager:
     def set_filter(cls, id):
         try:
             url = "%s/filter/%s" % (cls.USERS_ENDPOINT, str(id))
-            requests.put(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+            response = requests.put(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
             return abort(500)
+        return response
 
     @classmethod
     def unset_filter(cls, id):
         try:
             url = "%s/filter/%s" % (cls.USERS_ENDPOINT, str(id))
-            requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+            response = requests.delete(url,
+                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
             return abort(500)
-
+        return response
     @classmethod
     def authenticate(cls, email, password):
         """
