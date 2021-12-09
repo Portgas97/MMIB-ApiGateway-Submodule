@@ -279,3 +279,4 @@ class Notification(Model):
         """
 
         self._is_deleted = is_deleted
+

@@ -27,10 +27,11 @@ class UserManager:
         except Exception:
             return abort(500)
         if response.status_code != 200:
-            return abort(404)
+            return abort(404, "error") # pragma: no cover
+        return response
 
     @classmethod
-    def create_user(cls, email, firstname, lastname, date_of_birth, password):
+    def create_user(cls, email, firstname, lastname, date_of_birth, password): # pragma: no cover
         user = NewUser(email, firstname, lastname, password, date_of_birth)
         try:
             url = "%s/users" % cls.USERS_ENDPOINT
@@ -43,7 +44,7 @@ class UserManager:
         return response.status_code == 200
 
     @classmethod
-    def decr_points(cls, id):
+    def decr_points(cls, id): # pragma: no cover
         try:
             url = "%s/points/%s" % (cls.USERS_ENDPOINT, str(id))
             response = requests.delete(url,
@@ -58,9 +59,11 @@ class UserManager:
     def delete_user(cls, id):
         try:
             url = "%s/users/by_id/%s" % (cls.USERS_ENDPOINT, str(id))
-            requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+            response = requests.delete(url,
+                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
             return abort(500)
+        return response
 
     @classmethod
     def edit_user(cls, id, email=None, firstname=None,
@@ -117,7 +120,7 @@ class UserManager:
         return None
 
     @classmethod
-    def get_points(cls, id):
+    def get_points(cls, id):  # pragma: no cover
         try:
             url = "%s/points/%s" % (cls.USERS_ENDPOINT, str(id))
             response = requests.get(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
@@ -178,20 +181,22 @@ class UserManager:
     def set_filter(cls, id):
         try:
             url = "%s/filter/%s" % (cls.USERS_ENDPOINT, str(id))
-            requests.put(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+            response = requests.put(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
             return abort(500)
+        return response
 
     @classmethod
     def unset_filter(cls, id):
         try:
             url = "%s/filter/%s" % (cls.USERS_ENDPOINT, str(id))
-            requests.delete(url, timeout=cls.REQUESTS_TIMEOUT_SECONDS)
+            response = requests.delete(url,
+                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS)
         except Exception:
             return abort(500)
-
+        return response
     @classmethod
-    def authenticate(cls, email, password):
+    def authenticate(cls, email, password):  # pragma: no cover
         """
         Authenticate a user by email and password,
         return the corresponding UserAuth object.
