@@ -70,8 +70,13 @@ class MessageManager:
 
     @classmethod
     def create_draft(cls, message, sender, receiver, time, image, image_hash):
+        if isinstance(image_hash, str) or image_hash is None:
+            hash = image_hash
+        else:
+            hash = image_hash.decode('utf-8')
+
         draft = Message(None, sender, receiver,
-                        message, time, image, image_hash)
+                        message, time, image, hash)
         try:
             url = "%s/draft" % cls.MESSAGES_ENDPOINT
             response = requests.post(url,
@@ -97,6 +102,12 @@ class MessageManager:
     @classmethod
     def create_message(
             cls, message, sender, receiver, time, image, image_hash):
+
+        if isinstance(image_hash, str) or image_hash is None:
+            hash = image_hash
+        else:
+            hash = image_hash.decode('utf-8')
+        
         message = Message(
             None,
             sender,
@@ -104,7 +115,7 @@ class MessageManager:
             message,
             time,
             image,
-            image_hash.decode('utf-8')
+            hash
         )
         try:
             url = "%s/message" % cls.MESSAGES_ENDPOINT

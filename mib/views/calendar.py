@@ -11,7 +11,7 @@ class MessageCalendar:
     def __init__(self, receiver, sender, time, id):
         self.receiver_email = receiver
         self.sender_email = sender
-        self.time = time,
+        self.time = time
         self.id = id
 
 
