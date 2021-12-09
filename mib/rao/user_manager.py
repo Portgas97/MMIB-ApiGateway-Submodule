@@ -28,6 +28,7 @@ class UserManager:
             return abort(500)
         if response.status_code != 200:
             return abort(404)
+        return response
 
     @classmethod
     def create_user(cls, email, firstname, lastname, date_of_birth, password):
