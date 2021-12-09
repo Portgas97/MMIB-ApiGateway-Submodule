@@ -3,8 +3,6 @@ from faker import Faker
 from random import randint, choice
 from werkzeug.exceptions import HTTPException
 import requests
-import sys  # for debugging
-import json
 from mib.models.notification import Notification
 from .rao_test import RaoTest
 
@@ -72,8 +70,6 @@ class TestNotificationManager(RaoTest):
     def test_delete_notification(self, mock_delete):
         mock_delete.return_value = Mock(status_code=200)
         response = self.notifications_manager.delete_notification("1")
-        import sys
-        sys.stderr.write(str(response))
         assert response is not None
 
     @patch('mib.rao.notifications_manager.requests.delete')
@@ -95,8 +91,6 @@ class TestNotificationManager(RaoTest):
             }
         )
         response = self.notifications_manager.get_notifications("user")
-        # import sys
-        # sys.stderr.write(str(response))
         assert response is not None
 
     @patch('mib.rao.notifications_manager.requests.get')
@@ -124,8 +118,6 @@ class TestNotificationManager(RaoTest):
             }
         )
         response = self.notifications_manager.notifications_count("user")
-        # import sys
-        # sys.stderr.write(str(response))
         assert response is not None
 
     @patch('mib.rao.notifications_manager.requests.get')
