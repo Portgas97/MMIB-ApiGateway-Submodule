@@ -53,8 +53,8 @@ def send_messages(to_parse, current_user_mail, time, message, filename,
             if reply == -3:
                 # abort, bad time format
                 return [-3], [-3]
-            if reply != -1:
-                correctly_sent.append(current_address)
+            if reply == -1:
+                not_correctly_sent.append(current_address)
             if reply != -2:
                 # if the user wasn't blacklisted, we create a notification
                 title = current_user_mail + " Sent You a Message"
@@ -62,8 +62,9 @@ def send_messages(to_parse, current_user_mail, time, message, filename,
                               "open it."
                 nm.create_notification(current_address, title,
                                        description, time, reply)
-            else:
-                not_correctly_sent.append(current_address)
+            if reply != -1:
+                correctly_sent.append(current_address)
+                
     return correctly_sent, not_correctly_sent
 
 

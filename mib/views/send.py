@@ -113,7 +113,7 @@ def _send(_id, data=""):
                     tmp_filename,
                     tmp_image
                 )
-                if correctly_sent[0] == -3:
+                if correctly_sent != [] and correctly_sent[0] == -3:
                     # the message ms told us time was invalid
                     form.time.errors.append("You can't send a message "
                                             "into the past!")
