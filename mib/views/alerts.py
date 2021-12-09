@@ -29,10 +29,6 @@ def notifications():
                            notifications=query_notifications)
 
 
-    # NotificationsManager.create_notification("admin@example.com", "title", "desctiption", "2021-11-11 20:10:19", 1)
- 
-
-
 def get_notifications_count(user_email):
     """
     :param user_email: the mail we want notification count for

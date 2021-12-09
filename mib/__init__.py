@@ -62,6 +62,7 @@ def create_app():
 
     # from mib.database import db
     # db.init_app(app)
+
     import mib.auth.login_manager as lm
     login = lm.init_login_manager(app)
 
