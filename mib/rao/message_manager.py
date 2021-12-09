@@ -151,7 +151,7 @@ class MessageManager:
 
     @classmethod
     def edit_draft(cls, id, message, sender, receiver, time, image, img_hash):
-        draft = Draft(id, sender, receiver, message, time, image, img_hash)
+        draft = Draft(int(id), sender, receiver, message, time, image, img_hash)
         try:
             url = "%s/draft" % cls.MESSAGES_ENDPOINT
             response = requests.put(

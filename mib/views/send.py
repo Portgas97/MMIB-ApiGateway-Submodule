@@ -103,6 +103,8 @@ def _send(_id, data=""):
                     )
             # we are sending a real message
             else:
+                if _id is not None:
+                    mm.delete_draft(_id)
                 correctly_sent, not_correctly_sent = send_messages(
                     to_parse,
                     current_user_mail,
