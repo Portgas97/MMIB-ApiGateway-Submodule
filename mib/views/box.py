@@ -212,6 +212,7 @@ def withdraw(m_id):
         if um.decr_points(current_user.get_id()):
             # get the message from the database
             if mm.withdraw(m_id):
+                nm.delete_notification(m_id)
                 return redirect('/outbox')
     abort(401)
 
