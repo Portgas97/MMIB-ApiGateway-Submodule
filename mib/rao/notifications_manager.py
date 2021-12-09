@@ -25,7 +25,7 @@ class NotificationsManager:
             url = "%s/notification" % cls.NOTIFICATIONS_ENDPOINT
             response = requests.post(url,
                                      timeout=cls.REQUESTS_TIMEOUT_SECONDS,
-                                     data=json.dumps(notification),
+                                     data=json.dumps(notification.__dict__),
                                      headers=encoder.headers)
         except Exception:
             return abort(500)
